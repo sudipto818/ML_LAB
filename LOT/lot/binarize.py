@@ -1,0 +1,41 @@
+import numpy as np
+
+# scale every feature to mean 0 and std 1, so one threshold scale fits all features
+# also returns mu and sd, because predict has to scale new data the same way
+# crucial for oblique splits
+def standardize(X):
+    mu = X.mean(axis=0)
+    sd = X.std(axis=0) + 1e-12
+    Xs = (X - mu) / sd
+    return Xs, mu, sd
+
+
+# axis-aligned thresholds at the quantiles 1/(q+1), 2/(q+1), ..., q/(q+1) of each feature
+# q must be odd so that the median (the 1/2 quantile) is always a candidate
+# returns a list of (feature j, threshold t)
+def axis_thresholds(Xs, q):
+    if q % 2 == 0:
+        raise ValueError("q must be odd so the median is included")
+    p = Xs.shape[1]
+    qs = []
+    for k in range(1, q + 1):
+        qs.append(k / (q + 1))
+    ax = []
+    for j in range(p):
+        ts = np.unique(np.quantile(Xs[:, j], qs, method="lower"))   # real data values only
+        mx = Xs[:, j].max()
+        for t in ts:
+            if t < mx:                  # t = max would send everything left, not a split
+                ax.append((j, t))
+    return ax
+
+
+# B[i, f] = True if sample i goes left under test f, i.e. Xs[i, j] <= t
+def binarize(Xs, ax):
+    N = len(Xs)
+    k = len(ax)
+    B = np.zeros((N, k), dtype=bool)
+    for f in range(k):
+        j, t = ax[f]
+        B[:, f] = Xs[:, j] <= t
+    return B
