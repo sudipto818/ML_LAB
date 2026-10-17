@@ -1,9 +1,9 @@
 import numpy as np
 from lot.data import parity
-from lot.binarize import standardize, axis_thresholds, binarize
+from lot.binarize import standardize, axisThresholds, binarize
 
 
-def test_standardize():
+def testStandardize():
     X, y = parity(2000, 2, 1, 0)
     Xs, mu, sd = standardize(X)
     for j in range(3):
@@ -13,10 +13,10 @@ def test_standardize():
 
 
 # q = 5 thresholds per feature, and the median is one of them
-def test_axis_thresholds_count_and_median():
+def testAxisThresholdsCountAndMedian():
     X, y = parity(2000, 2, 1, 0)
     Xs, mu, sd = standardize(X)
-    ax = axis_thresholds(Xs, 5)
+    ax = axisThresholds(Xs, 5)
     assert len(ax) == 3 * 5
     for j in range(3):
         ts = []
@@ -27,20 +27,20 @@ def test_axis_thresholds_count_and_median():
         assert min(abs(t - med) for t in ts) < 0.01
 
 
-def test_even_q_rejected():
+def testEvenQRejected():
     Xs = np.random.default_rng(0).normal(size=(50, 2))
     try:
-        axis_thresholds(Xs, 4)
+        axisThresholds(Xs, 4)
         assert False
     except ValueError:
         pass
 
 
 # columns match the definition, and column f sends about k/(q+1) of the data left
-def test_binarize_matches_definition():
+def testBinarizeMatchesDefinition():
     X, y = parity(1200, 2, 0, 0)
     Xs, mu, sd = standardize(X)
-    ax = axis_thresholds(Xs, 5)
+    ax = axisThresholds(Xs, 5)
     B = binarize(Xs, ax)
     assert B.shape == (1200, 10)
     assert B.dtype == bool
@@ -54,10 +54,10 @@ def test_binarize_matches_definition():
 
 
 # a 0/1 feature has only one useful threshold, so duplicates must collapse
-def test_binary_feature_collapses():
+def testBinaryFeatureCollapses():
     rng = np.random.default_rng(0)
     Xs = np.stack([rng.integers(0, 2, 500).astype(float), rng.normal(size=500)], axis=1)
-    ax = axis_thresholds(Xs, 5)
+    ax = axisThresholds(Xs, 5)
     cnt0 = 0
     for (j, t) in ax:
         if j == 0:

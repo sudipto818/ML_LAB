@@ -1,8 +1,8 @@
-from lot.binarize import standardize, axis_thresholds, binarize
+from lot.binarize import standardize, axisThresholds, binarize
 import numpy as np
 
 # labels y (0..C-1) -> one-hot matrix of shape (N, C)
-def one_hot(y, C):
+def oneHot(y, C):
     N = len(y)
     Y = np.zeros((N, C))
     for i in range(N):
@@ -15,16 +15,16 @@ def one_hot(y, C):
 def entropy(counts):
     counts = np.atleast_2d(counts).astype(float)
     n = counts.sum(axis=1, keepdims=True)
-    safe_n = np.where(n > 0, n, 1)          
-    p = counts / safe_n
-    safe_p = np.where(p > 0, p, 1)          # log2(1) = 0, so these terms vanish
-    h = -(p * np.log2(safe_p)).sum(axis=1)
+    safeN = np.where(n > 0, n, 1)          
+    p = counts / safeN
+    safeP = np.where(p > 0, p, 1)          # log2(1) = 0, so these terms vanish
+    h = -(p * np.log2(safeP)).sum(axis=1)
     return h
 
 
 # u(D) = lam + (|D| - max_c n_c(D)) / N, always divided by the root N
 # Y is the one-hot matrix of the whole training set, idx are the samples in this node
-def leaf_cost(Y, idx, lam):
+def leafCost(Y, idx, lam):
     N = len(Y)
     cnt = Y[idx].sum(axis=0)
     pred = int(np.argmax(cnt))
@@ -59,20 +59,20 @@ def pick(score, cs):
 
 class LOT:
     # lookahead=False -> greedy, lookahead=True -> look (LicketySPLIT while only axis tests are used)
-    def __init__(self, depth=4, lam=0.005, gamma=0.0, lookahead=False, q_ax=5, n_min=5):
+    def __init__(self, depth=4, lam=0.005, gamma=0.0, lookahead=False, qAx=5, nMin=5):
         self.depth = depth
         self.lam = lam
         self.gamma = gamma
         self.lookahead = lookahead
-        self.q_ax = q_ax
-        self.n_min = n_min
+        self.qAx = qAx
+        self.nMin = nMin
 
     def fit(self, X, y):
         self.Xs, self.mu, self.sd = standardize(X)
         self.N = len(X)
         self.C = int(y.max()) + 1
-        self.Y = one_hot(y, self.C)
-        ax = axis_thresholds(self.Xs, self.q_ax)
+        self.Y = oneHot(y, self.C)
+        ax = axisThresholds(self.Xs, self.qAx)
         self.B = binarize(self.Xs, ax)
         # a test is stored as (features used, signs, threshold); an axis test uses one feature
         self.meta = []
@@ -85,19 +85,19 @@ class LOT:
             self.cost, self.tree = self.greedy(idx, self.depth)
         return self
 
-    # valid tests for the samples idx: at least n_min samples on each side
+    # valid tests for the samples idx: at least nMin samples on each side
     def candidates(self, idx):
         M = self.B[idx]
         nl = M.sum(axis=0)
         n = len(idx)
-        keep = np.flatnonzero((nl >= self.n_min) & (n - nl >= self.n_min))
+        keep = np.flatnonzero((nl >= self.nMin) & (n - nl >= self.nMin))
         meta = []
         for f in keep:
             meta.append(self.meta[f])
         return M[:, keep], meta
 
     def greedy(self, idx, depth):
-        u, pred = leaf_cost(self.Y, idx, self.lam)
+        u, pred = leafCost(self.Y, idx, self.lam)
         if depth == 0 or u - self.lam < 1e-12:       # out of depth, or the node is already pure
             return u, ("leaf", pred)
         M, meta = self.candidates(idx)
@@ -116,7 +116,7 @@ class LOT:
         return u, ("leaf", pred)
 
     def look(self, idx, depth):
-        u, pred = leaf_cost(self.Y, idx, self.lam)
+        u, pred = leafCost(self.Y, idx, self.lam)
         if depth == 0 or u - self.lam < 1e-12:
             return u, ("leaf", pred)
         M, meta = self.candidates(idx)
@@ -153,12 +153,12 @@ class LOT:
         self.walk(node[2], Xs, idx[left], out)
         self.walk(node[3], Xs, idx[~left], out)
 
-    def n_leaves(self, node=None):
+    def nLeaves(self, node=None):
         if node is None:
             node = self.tree
         if node[0] == "leaf":
             return 1
-        return self.n_leaves(node[2]) + self.n_leaves(node[3])
+        return self.nLeaves(node[2]) + self.nLeaves(node[3])
 
     def show(self, node=None, ind=""):
         if node is None:

@@ -1,7 +1,7 @@
 import numpy as np
 
 # y = XOR of 1[x_j > 0] over the first r features
-def parity_labels(X, r):
+def parityLabels(X, r):
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -14,7 +14,7 @@ def parity_labels(X, r):
 
 
 # y = 1[x1 + x2 > 0] XOR 1[x3 - x4 > 0]
-def rotated_parity_labels(X):
+def rotatedParityLabels(X):
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -29,7 +29,7 @@ def rotated_parity_labels(X):
 
 
 # class = index of the orthant of the first p features, in 0..2^p-1
-def orthant_labels(X, p):
+def orthantLabels(X, p):
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -40,7 +40,7 @@ def orthant_labels(X, p):
 
 
 # y = 1[x1 + x2 > 0]
-def diagonal_labels(X):
+def diagonalLabels(X):
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -52,15 +52,15 @@ def diagonal_labels(X):
 def parity(n, r, noise=0, seed=0):
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, r + noise))
-    y = parity_labels(X, r)
+    y = parityLabels(X, r)
     return X, y
 
 
 # first 4 features matter, the rest are noise
-def rotated_parity(n, noise=0, seed=0):
+def rotatedParity(n, noise=0, seed=0):
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, 4 + noise))
-    y = rotated_parity_labels(X)
+    y = rotatedParityLabels(X)
     return X, y
 
 
@@ -68,7 +68,7 @@ def rotated_parity(n, noise=0, seed=0):
 def orthant(n, p, noise=0, seed=0):
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, p + noise))
-    y = orthant_labels(X, p)
+    y = orthantLabels(X, p)
     return X, y
 
 
@@ -76,7 +76,7 @@ def orthant(n, p, noise=0, seed=0):
 def diagonal(n, noise=0, seed=0):
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, 2 + noise))
-    y = diagonal_labels(X)
+    y = diagonalLabels(X)
     return X, y
 
 

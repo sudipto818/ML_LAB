@@ -5,7 +5,7 @@ import numpy as np
 
 # |P_r| = C(p, r) * 2^(r-1): choose r features, signs +-1 each, first sign fixed to +1
 # (a and -a describe the same split with the sides swapped, so we only count one of them)
-def n_projections(p, r):
+def nProjections(p, r):
     return math.comb(p, r) * 2 ** (r - 1)
 
 
@@ -14,13 +14,13 @@ def n_projections(p, r):
 #   - otherwise we draw m distinct ones, with a seed that depends only on the node's samples,
 #     the level and the run seed, so the same node always gets the same projections
 # a projection is (support, signs), e.g. ((0, 3), (1, -1)) means x1 - x4
-def sample_projections(p, s, m, idx, level, seed):
+def sampleProjections(p, s, m, idx, level, seed):
     out = []
     rng = np.random.default_rng([zlib.crc32(idx.tobytes()), level, seed])
     for r in range(2, s + 1):
         if r > p:
             break
-        if n_projections(p, r) <= m:
+        if nProjections(p, r) <= m:
             for sup in itertools.combinations(range(p), r):
                 for sg in itertools.product((1, -1), repeat=r - 1):
                     out.append((sup, (1,) + sg))
@@ -37,7 +37,7 @@ def sample_projections(p, s, m, idx, level, seed):
 # for every projection z = Xs[idx, support] @ signs take q thresholds at the quantiles
 # 1/(q+1), ..., q/(q+1) of z, using this node's samples only
 # returns M (n x k boolean, True = goes left) and meta, a list of (support, signs, threshold)
-def oblique_candidates(Xs, idx, projs, q):
+def obliqueCandidates(Xs, idx, projs, q):
     qs = []
     for k in range(1, q + 1):
         qs.append(k / (q + 1))

@@ -13,7 +13,7 @@ def standardize(X):
 # axis-aligned thresholds at the quantiles 1/(q+1), 2/(q+1), ..., q/(q+1) of each feature
 # q must be odd so that the median (the 1/2 quantile) is always a candidate
 # returns a list of (feature j, threshold t)
-def axis_thresholds(Xs, q):
+def axisThresholds(Xs, q):
     if q % 2 == 0:
         raise ValueError("q must be odd so the median is included")
     p = Xs.shape[1]

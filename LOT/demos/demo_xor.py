@@ -10,6 +10,6 @@ for name, la in [("Greedy", False), ("Look", True)]:
     m = LOT(depth=2, lookahead=la).fit(X, y)
     print("==", name, "==")
     m.show()
-    print("leaves:", m.n_leaves(), "| train objective R:", round(m.cost, 4),
+    print("leaves:", m.nLeaves(), "| train objective R:", round(m.cost, 4),
           "| test error:", round(float(np.mean(m.predict(Xt) != yt)), 3))
     print()
