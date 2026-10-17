@@ -1,5 +1,5 @@
 from lot.binarize import standardize, axisThresholds, binarize
-from lot.oblique import sampleProjections, obliqueCandidates
+from lot.oblique import sampleProjections, obliqueCandidates, project
 import numpy as np
 
 def oneHot(y, C):
@@ -173,7 +173,7 @@ class LOT:
             out[idx] = node[1]
             return
         sup, sg, t = node[1]
-        z = Xs[np.ix_(idx, sup)] @ np.array(sg, dtype=float)
+        z = project(Xs, idx, sup, sg)
         left = z <= t
         self.walk(node[2], Xs, idx[left], out)
         self.walk(node[3], Xs, idx[~left], out)
