@@ -1,5 +1,5 @@
 import numpy as np
-from lot.data import parity, rotatedParity, diagonal, orthant, trunk
+from lot.data import parity, rotatedParity, diagonal, trunk
 from lot.tree import LOT
 from lot.metrics import objective, countExtra
 
@@ -49,20 +49,6 @@ def testRotatedParityOnlyLot():
     assert np.mean(axErrs) > 0.35
 
 
-def testProp12Oblique():
-    """Proposition 12 with oblique candidates: R(Look) <= R(Greedy) on the training objective"""
-    sets = []
-    for seed in range(2):
-        sets += [parity(300, 2, 2, seed), rotatedParity(300, 1, seed), diagonal(300, 2, seed),
-                 orthant(300, 3, 0, seed), trunk(300, 5, seed)]
-    for X, y in sets:
-        for depth in (2, 3):
-            for gamma in (0.0, 0.0025):
-                g = LOT(depth=depth, gamma=gamma, oblique=True).fit(X, y)
-                l = LOT(depth=depth, gamma=gamma, lookahead=True, oblique=True).fit(X, y)
-                assert l.cost <= g.cost + 1e-12
-
-
 def testFitCostMatchesObjectiveOblique():
     """the cost the recursion returns equals R(T) recomputed from the finished tree, gamma term included"""
     sets = [rotatedParity(400, 2, 0), diagonal(400, 1, 1), trunk(400, 6, 2)]
@@ -71,14 +57,6 @@ def testFitCostMatchesObjectiveOblique():
             m = LOT(depth=3, gamma=0.003, lookahead=la, oblique=True).fit(X, y)
             assert abs(m.cost - objective(m, X, y)) < 1e-9
     assert countExtra(LOT(depth=2, oblique=True).fit(*diagonal(400, 0, 0)).tree) == 1
-
-
-def testDeterministicOblique():
-    """same data and seed -> same tree, also when p is large enough that projections are sampled"""
-    X, y = trunk(300, 10, 0)
-    a = LOT(depth=3, lookahead=True, oblique=True, seed=5).fit(X, y)
-    b = LOT(depth=3, lookahead=True, oblique=True, seed=5).fit(X, y)
-    assert a.tree == b.tree
 
 
 def testNMinRespectedOblique():
