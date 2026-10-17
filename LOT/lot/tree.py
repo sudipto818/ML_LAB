@@ -1,4 +1,5 @@
 from lot.binarize import standardize, axisThresholds, binarize
+from lot.oblique import sampleProjections, obliqueCandidates
 import numpy as np
 
 # labels y (0..C-1) -> one-hot matrix of shape (N, C)
@@ -59,13 +60,20 @@ def pick(score, cs):
 
 class LOT:
     # lookahead=False -> greedy, lookahead=True -> look (LicketySPLIT while only axis tests are used)
-    def __init__(self, depth=4, lam=0.005, gamma=0.0, lookahead=False, qAx=5, nMin=5):
+    # oblique=True adds sparse projections: up to s non-zeros, m per support size, q thresholds each
+    def __init__(self, depth=4, lam=0.005, gamma=0.0, lookahead=False, oblique=False,
+                 qAx=5, s=3, m=30, q=3, nMin=5, seed=0):
         self.depth = depth
         self.lam = lam
         self.gamma = gamma
         self.lookahead = lookahead
+        self.oblique = oblique
         self.qAx = qAx
+        self.s = s
+        self.m = m
+        self.q = q
         self.nMin = nMin
+        self.seed = seed
 
     def fit(self, X, y):
         self.Xs, self.mu, self.sd = standardize(X)
@@ -86,21 +94,30 @@ class LOT:
         return self
 
     # valid tests for the samples idx: at least nMin samples on each side
-    def candidates(self, idx):
+    # axis columns come first, oblique ones after, so on a tie the lower index keeps the axis test
+    # level = self.depth - depth is the same whether greedy or look reaches this node, so both
+    # see the same projections (Proposition 12 needs that)
+    def candidates(self, idx, depth):
         M = self.B[idx]
+        allMeta = self.meta
+        if self.oblique:
+            projs = sampleProjections(self.Xs.shape[1], self.s, self.m, idx, self.depth - depth, self.seed)
+            Mo, metaO = obliqueCandidates(self.Xs, idx, projs, self.q)
+            M = np.hstack([M, Mo])
+            allMeta = self.meta + metaO
         nl = M.sum(axis=0)
         n = len(idx)
         keep = np.flatnonzero((nl >= self.nMin) & (n - nl >= self.nMin))
         meta = []
         for f in keep:
-            meta.append(self.meta[f])
+            meta.append(allMeta[f])
         return M[:, keep], meta
 
     def greedy(self, idx, depth):
         u, pred = leafCost(self.Y, idx, self.lam)
         if depth == 0 or u - self.lam < 1e-12:       # out of depth, or the node is already pure
             return u, ("leaf", pred)
-        M, meta = self.candidates(idx)
+        M, meta = self.candidates(idx, depth)
         if len(meta) == 0:
             return u, ("leaf", pred)
         g = gains(M, self.Y[idx])
@@ -119,7 +136,7 @@ class LOT:
         u, pred = leafCost(self.Y, idx, self.lam)
         if depth == 0 or u - self.lam < 1e-12:
             return u, ("leaf", pred)
-        M, meta = self.candidates(idx)
+        M, meta = self.candidates(idx, depth)
         if len(meta) == 0:
             return u, ("leaf", pred)
         cs = []
