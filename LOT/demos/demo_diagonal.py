@@ -2,7 +2,7 @@ import numpy as np
 from lot.data import diagonal
 from lot.tree import LOT
 
-# Diagonal: y = 1[x1 + x2 > 0]. One oblique split is exact; an axis tree needs a staircase
+"""Diagonal: y = 1[x1 + x2 > 0]. One oblique split is exact; an axis tree needs a staircase"""
 X, y = diagonal(1000, 0, 1)
 Xt, yt = diagonal(20000, 0, 101)
 

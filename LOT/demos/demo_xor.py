@@ -2,7 +2,7 @@ import numpy as np
 from lot.data import parity
 from lot.tree import LOT
 
-# XOR: y = 1[x1 > 0] XOR 1[x2 > 0]
+"""XOR: y = 1[x1 > 0] XOR 1[x2 > 0]"""
 X, y = parity(1000, 2, 0, 1)
 Xt, yt = parity(4000, 2, 0, 101)
 

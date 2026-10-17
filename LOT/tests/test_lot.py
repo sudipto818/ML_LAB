@@ -8,8 +8,8 @@ def error(m, X, y):
     return np.mean(m.predict(X) != y)
 
 
-# s = 1 allows no projection, so the oblique switch must change nothing
 def testSOneEqualsAxisOnly():
+    """s = 1 allows no projection, so the oblique switch must change nothing"""
     X, y = parity(400, 2, 3, 0)
     for la in (False, True):
         a = LOT(depth=3, lookahead=la).fit(X, y)
@@ -17,9 +17,9 @@ def testSOneEqualsAxisOnly():
         assert a.tree == b.tree and a.cost == b.cost
 
 
-# y = 1[x1 + x2 > 0]: one oblique split does it (spec Section 5.1), while an axis tree
-# with S leaves keeps error >= 1/(2S) (Proposition 9)
 def testDiagonalNeedsOneObliqueSplit():
+    """y = 1[x1 + x2 > 0]: one oblique split does it (spec Section 5.1), while an axis tree
+    with S leaves keeps error >= 1/(2S) (Proposition 9)"""
     for seed in range(3):
         X, y = diagonal(1000, 0, seed)
         Xt, yt = diagonal(20000, 0, 100 + seed)
@@ -31,9 +31,9 @@ def testDiagonalNeedsOneObliqueSplit():
         assert error(ax, Xt, yt) > 1 / (2 * ax.nLeaves()) - 0.01
 
 
-# rotated parity at depth 2 (spec Section 6.7): the root split x1 + x2 <= 0 has zero gain, so only
-# Look with oblique candidates (LOT) finds the four-leaf tree of Figure 4; axis Look cannot
 def testRotatedParityOnlyLot():
+    """rotated parity at depth 2 (spec Section 6.7): the root split x1 + x2 <= 0 has zero gain, so only
+    Look with oblique candidates (LOT) finds the four-leaf tree of Figure 4; axis Look cannot"""
     axErrs = []
     for seed in range(4):
         X, y = rotatedParity(1000, 0, seed)
@@ -49,8 +49,8 @@ def testRotatedParityOnlyLot():
     assert np.mean(axErrs) > 0.35
 
 
-# Proposition 12 with oblique candidates: R(Look) <= R(Greedy) on the training objective
 def testProp12Oblique():
+    """Proposition 12 with oblique candidates: R(Look) <= R(Greedy) on the training objective"""
     sets = []
     for seed in range(2):
         sets += [parity(300, 2, 2, seed), rotatedParity(300, 1, seed), diagonal(300, 2, seed),
@@ -63,8 +63,8 @@ def testProp12Oblique():
                 assert l.cost <= g.cost + 1e-12
 
 
-# the cost the recursion returns equals R(T) recomputed from the finished tree, gamma term included
 def testFitCostMatchesObjectiveOblique():
+    """the cost the recursion returns equals R(T) recomputed from the finished tree, gamma term included"""
     sets = [rotatedParity(400, 2, 0), diagonal(400, 1, 1), trunk(400, 6, 2)]
     for X, y in sets:
         for la in (False, True):
@@ -73,16 +73,16 @@ def testFitCostMatchesObjectiveOblique():
     assert countExtra(LOT(depth=2, oblique=True).fit(*diagonal(400, 0, 0)).tree) == 1
 
 
-# same data and seed -> same tree, also when p is large enough that projections are sampled
 def testDeterministicOblique():
+    """same data and seed -> same tree, also when p is large enough that projections are sampled"""
     X, y = trunk(300, 10, 0)
     a = LOT(depth=3, lookahead=True, oblique=True, seed=5).fit(X, y)
     b = LOT(depth=3, lookahead=True, oblique=True, seed=5).fit(X, y)
     assert a.tree == b.tree
 
 
-# every oblique split also leaves at least nMin samples on each side
 def testNMinRespectedOblique():
+    """every oblique split also leaves at least nMin samples on each side"""
     X, y = rotatedParity(300, 2, 0)
     m = LOT(depth=4, oblique=True, nMin=40).fit(X, y)
     def walk(node, idx):

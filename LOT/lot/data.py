@@ -1,7 +1,7 @@
 import numpy as np
 
-# y = XOR of 1[x_j > 0] over the first r features
 def parityLabels(X, r):
+    """y = XOR of 1[x_j > 0] over the first r features"""
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -13,8 +13,8 @@ def parityLabels(X, r):
     return y
 
 
-# y = 1[x1 + x2 > 0] XOR 1[x3 - x4 > 0]
 def rotatedParityLabels(X):
+    """y = 1[x1 + x2 > 0] XOR 1[x3 - x4 > 0]"""
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -28,8 +28,8 @@ def rotatedParityLabels(X):
     return y
 
 
-# class = index of the orthant of the first p features, in 0..2^p-1
 def orthantLabels(X, p):
+    """class = index of the orthant of the first p features, in 0..2^p-1"""
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -39,8 +39,8 @@ def orthantLabels(X, p):
     return y
 
 
-# y = 1[x1 + x2 > 0]
 def diagonalLabels(X):
+    """y = 1[x1 + x2 > 0]"""
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -48,40 +48,40 @@ def diagonalLabels(X):
             y[i] = 1
     return y
 
-# r informative features, `noise` extra features with no information
 def parity(n, r, noise=0, seed=0):
+    """r informative features, `noise` extra features with no information"""
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, r + noise))
     y = parityLabels(X, r)
     return X, y
 
 
-# first 4 features matter, the rest are noise
 def rotatedParity(n, noise=0, seed=0):
+    """first 4 features matter, the rest are noise"""
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, 4 + noise))
     y = rotatedParityLabels(X)
     return X, y
 
 
-# 2^p classes, one per orthant of the first p features
 def orthant(n, p, noise=0, seed=0):
+    """2^p classes, one per orthant of the first p features"""
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, p + noise))
     y = orthantLabels(X, p)
     return X, y
 
 
-# two classes separated by the line x1 + x2 = 0
 def diagonal(n, noise=0, seed=0):
+    """two classes separated by the line x1 + x2 = 0"""
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, 2 + noise))
     y = diagonalLabels(X)
     return X, y
 
 
-# Trunk problem: two Gaussians with means +mu and -mu, mu_j = 1/sqrt(j), identity covariance
 def trunk(n, p, seed=0):
+    """Trunk problem: two Gaussians with means +mu and -mu, mu_j = 1/sqrt(j), identity covariance"""
     rng = np.random.default_rng(seed)
     mu = 1 / np.sqrt(np.arange(1, p + 1))
     y = rng.integers(0, 2, n)

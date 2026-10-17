@@ -2,8 +2,8 @@ import numpy as np
 from lot.data import rotatedParity
 from lot.tree import LOT
 
-# Rotated parity: y = 1[x1 + x2 > 0] XOR 1[x3 - x4 > 0]. The right root split has zero gain,
-# so only lookahead with oblique candidates (LOT) finds the four-leaf tree at depth 2
+"""Rotated parity: y = 1[x1 + x2 > 0] XOR 1[x3 - x4 > 0]. The right root split has zero gain,
+so only lookahead with oblique candidates (LOT) finds the four-leaf tree at depth 2"""
 X, y = rotatedParity(1000, 0, 1)
 Xt, yt = rotatedParity(20000, 0, 101)
 

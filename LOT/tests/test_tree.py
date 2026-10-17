@@ -7,30 +7,35 @@ def testEntropyHandValues():
     assert abs(entropy([5, 5])[0] - 1.0) < 1e-12
     assert abs(entropy([10, 0])[0] - 0.0) < 1e-12
     assert abs(entropy([1, 1, 1, 1])[0] - 2.0) < 1e-12
-    assert entropy([0, 0])[0] == 0.0                      # empty node
+    """empty node"""
+    assert entropy([0, 0])[0] == 0.0
     h = entropy(np.array([[5, 5], [10, 0], [3, 1]]))
     assert abs(h[2] - 0.8112781244591328) < 1e-9          
 
 
 def testLeafCost():
-    # N = 10 samples in total, the node holds 4 of them with counts [3, 1]
+    """N = 10 samples in total, the node holds 4 of them with counts [3, 1]"""
     y = np.array([0, 0, 0, 1, 1, 1, 1, 1, 1, 1])
     Y = oneHot(y, 2)
     idx = np.array([0, 1, 2, 3])
     u, pred = leafCost(Y, idx, 0.01)
     assert pred == 0
-    assert abs(u - (0.01 + 1 / 10)) < 1e-12               # divided by root N, not by 4
-    u, pred = leafCost(Y, np.array([0, 1, 2]), 0.01)     # pure node costs only lam
+    """divided by root N, not by 4"""
+    assert abs(u - (0.01 + 1 / 10)) < 1e-12
+    """pure node costs only lam"""
+    u, pred = leafCost(Y, np.array([0, 1, 2]), 0.01)
     assert abs(u - 0.01) < 1e-12
 
 
 def testGainHandValues():
-    # 8 samples, 4 of each class
+    """8 samples, 4 of each class"""
     y = np.array([0, 0, 0, 0, 1, 1, 1, 1])
     Yd = oneHot(y, 2)
     perfect = np.array([1, 1, 1, 1, 0, 0, 0, 0], dtype=bool)
-    mixed = np.array([1, 1, 1, 0, 1, 0, 0, 0], dtype=bool)    # left (3,1), right (1,3)
-    useless = np.array([1, 0, 1, 0, 1, 0, 1, 0], dtype=bool)  # left (2,2), right (2,2)
+    """left (3,1), right (1,3)"""
+    mixed = np.array([1, 1, 1, 0, 1, 0, 0, 0], dtype=bool)
+    """left (2,2), right (2,2)"""
+    useless = np.array([1, 0, 1, 0, 1, 0, 1, 0], dtype=bool)
     M = np.stack([perfect, mixed, useless], axis=1)
     g = gains(M, Yd)
     assert abs(g[0] - 1.0) < 1e-12
@@ -38,8 +43,8 @@ def testGainHandValues():
     assert abs(g[2] - 0.0) < 1e-12
 
 
-# on XOR no single-feature test has gain, but after one split the second feature does
 def testXorZeroGainThenFullGain():
+    """on XOR no single-feature test has gain, but after one split the second feature does"""
     X, y = parity(4000, 2, 0, 0)
     Y = oneHot(y, 2)
     qs = [0.25, 0.5, 0.75]
