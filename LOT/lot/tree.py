@@ -62,18 +62,24 @@ def pick(score, cs):
     return best
 
 
+"""the schedules s(level) of spec 6.8, for levels 0..3 (depth 4)"""
+schedules = {"flat": (3, 3, 3, 3), "rootHeavy": (3, 3, 2, 1), "tailHeavy": (1, 1, 3, 3)}
+
+
 class LOT:
     def __init__(self, depth=4, lam=0.005, gamma=0.0, lookahead=False, oblique=False,
                  qAx=5, s=3, m=30, q=3, nMin=5, seed=0):
         """lookahead=False -> greedy, lookahead=True -> look (LicketySPLIT while only axis tests are used)
-        oblique=True adds sparse projections: up to s non-zeros, m per support size, q thresholds each"""
+        oblique=True adds sparse projections: up to s non-zeros, m per support size, q thresholds each
+        s is one number (the same at every level) or a schedule with one entry per level, s[0] at the root"""
         self.depth = depth
         self.lam = lam
         self.gamma = gamma
         self.lookahead = lookahead
         self.oblique = oblique
         self.qAx = qAx
-        self.s = s
+        self.s = (s,) * depth if isinstance(s, int) else tuple(s)
+        assert len(self.s) >= depth, "the schedule needs an s for every level"
         self.m = m
         self.q = q
         self.nMin = nMin
@@ -104,8 +110,9 @@ class LOT:
         see the same projections (Proposition 12 needs that)"""
         M = self.B[idx]
         allMeta = self.meta
-        if self.oblique:
-            projs = sampleProjections(self.Xs.shape[1], self.s, self.m, idx, self.depth - depth, self.seed)
+        level = self.depth - depth
+        if self.oblique and self.s[level] >= 2:
+            projs = sampleProjections(self.Xs.shape[1], self.s[level], self.m, idx, level, self.seed)
             Mo, metaO = obliqueCandidates(self.Xs, idx, projs, self.q)
             M = np.hstack([M, Mo])
             allMeta = self.meta + metaO
