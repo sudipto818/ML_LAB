@@ -9,7 +9,7 @@ def error(m, X, y):
 
 
 def splitsByLevel(node, level=0, out=None):
-    """(level, number of non-zeros) of every split node"""
+    """(level, ||a||_0) of every split"""
     if out is None:
         out = []
     if node[0] == "split":
@@ -20,7 +20,6 @@ def splitsByLevel(node, level=0, out=None):
 
 
 def testIntSEqualsFlatSchedule():
-    """s = 3 is shorthand for the flat schedule (3, 3, 3)"""
     X, y = rotatedParity(300, 2, 0)
     a = LOT(depth=3, lookahead=True, oblique=True, s=3).fit(X, y)
     b = LOT(depth=3, lookahead=True, oblique=True, s=(3, 3, 3)).fit(X, y)
@@ -28,7 +27,6 @@ def testIntSEqualsFlatSchedule():
 
 
 def testScheduleBoundsEveryLevel():
-    """a split at level l never uses more than s(l) features, for the three schedules of spec 6.8"""
     X, y = rotatedParity(600, 2, 0)
     for name, s in schedules.items():
         m = LOT(depth=4, oblique=True, s=s).fit(X, y)
@@ -42,8 +40,7 @@ def testScheduleBoundsEveryLevel():
 
 
 def testTailHeavyMissesRotatedParity():
-    """rotated parity needs its oblique split at the root (H5): with s = (1, 3) the root can only be
-    an axis test and LOT fails; with pairs at both levels it finds the four-leaf tree"""
+    """the oblique split must be at the root (H5), so s = (1, 3) fails and (2, 2) succeeds"""
     for seed in range(2):
         X, y = rotatedParity(1000, 0, seed)
         Xt, yt = rotatedParity(20000, 0, 100 + seed)
@@ -56,9 +53,7 @@ def testTailHeavyMissesRotatedParity():
 
 
 def testLargeGammaRemovesObliqueSplits():
-    """gamma = 1 makes any oblique split cost more than the whole error, so none survives
-    Look falls back to an axis staircase; Greedy picks splits by gain alone (Algorithm 1, line 3),
-    so when its best-gain split is oblique it is rejected and the node becomes a leaf"""
+    """Look falls back to axis splits; Greedy picks by gain alone (Algorithm 1), so it ends at a leaf"""
     X, y = diagonal(1000, 0, 1)
     look = LOT(depth=3, gamma=1.0, lookahead=True, oblique=True).fit(X, y)
     assert countExtra(look.tree) == 0 and look.nLeaves() > 2
@@ -67,9 +62,8 @@ def testLargeGammaRemovesObliqueSplits():
 
 
 def testGammaThresholdOnRotatedParity():
-    """depth 2: the Figure 4 tree costs 3 gamma + 4 lam, while one oblique root over two axis splits
-    costs gamma + 4 lam + 1/4 (the axis test x3 <= 0 leaves error 1/4 in each child), so LOT
-    returns the Figure 4 tree only for gamma < 1/8, well below the leaf bound of spec 6.7"""
+    """Figure 4 tree: 3 gamma + 4 lam; oblique root over two axis splits: gamma + 4 lam + 1/4,
+    so Figure 4 needs gamma < 1/8, stricter than the leaf bound of spec 6.7"""
     for seed in range(2):
         X, y = rotatedParity(1000, 0, seed)
         lo = LOT(depth=2, gamma=0.08, lookahead=True, oblique=True).fit(X, y)

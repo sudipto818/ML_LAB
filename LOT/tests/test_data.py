@@ -3,7 +3,6 @@ from lot.data import (parity, rotatedParity, orthant, diagonal, trunk,parityLabe
 
 
 def testParityRule():
-    """XOR rule on 10 hand-picked points (r = 2)"""
     X = np.array([[0.3, 0.7], [0.3, -0.7], [-0.3, 0.7], [-0.3, -0.7],
                   [0.9, 0.1], [0.9, -0.1], [-0.9, 0.1], [-0.9, -0.1],
                   [0.01, 0.02], [-0.01, 0.02]])
@@ -14,7 +13,6 @@ def testParityRule():
 
 
 def testRotatedParityRule():
-    """rotated rule on 10 hand-picked points: y = 1[x1+x2>0] XOR 1[x3-x4>0]"""
     X = np.array([[1, 1, 1, 0], [1, 1, -1, 0], [-1, -1, 1, 0], [-1, -1, -1, 0],
                   [0.5, -0.2, 0, -1], [0.2, -0.5, 0, 1], [0.2, -0.5, 0, -1],
                   [0.5, -0.2, 0, 1], [-0.3, 0.1, 0.1, 0.5], [-0.3, 0.1, 0.5, 0.1]])
@@ -25,7 +23,6 @@ def testRotatedParityRule():
 
 
 def checkBinary(X, y, n, p):
-    """shapes, labels in {0,1}, roughly balanced classes"""
     assert X.shape == (n, p)
     assert y.shape == (n,)
     assert set(np.unique(y)) == {0, 1}
@@ -47,7 +44,6 @@ def testBinaryGenerators():
 
 
 def testOrthant():
-    """orthant has 2^p classes (not binary), each near 1/2^p"""
     n = 8000
     X, y = orthant(n, 3, 2, 0)
     assert X.shape == (n, 5)
@@ -58,7 +54,6 @@ def testOrthant():
 
 
 def testSeed():
-    """same seed gives same data, different seed gives different data"""
     X1, y1 = rotatedParity(100, 2, 7)
     X2, y2 = rotatedParity(100, 2, 7)
     X3, y3 = rotatedParity(100, 2, 8)
@@ -67,7 +62,6 @@ def testSeed():
 
 
 def testTrunkMeans():
-    """class 1 is centred at +mu (all positive), class 0 at -mu"""
     X, y = trunk(20000, 4, 0)
     m1 = X[y == 1].mean(axis=0)
     m0 = X[y == 0].mean(axis=0)

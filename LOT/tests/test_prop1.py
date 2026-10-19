@@ -1,12 +1,11 @@
 from lot.data import parity, rotatedParity, diagonal, orthant, trunk
 from lot.tree import LOT, schedules
 
-"""Proposition 12: R(Look) <= R(Greedy) on the training objective, for the same data, hyperparameters
-and switch O. A violation is a bug, most likely in the seeding of candidates (spec 7.8, item 5)
-parity(n, 2, 3) has p = 5, so triples are sampled; trunk(n, 8) has p = 8, so pairs are sampled too"""
+"""Proposition 12: R(Look) <= R(Greedy); a failure points at candidate seeding (spec 7.8 item 5)"""
 
 
 def datasets(seed, n):
+    """p = 5 and p = 8, so parity samples triples and trunk samples pairs too"""
     return [parity(n, 2, 3, seed), parity(n, 3, 2, seed), rotatedParity(n, 2, seed),
             diagonal(n, 2, seed), orthant(n, 3, 1, seed), trunk(n, 8, seed)]
 
@@ -33,7 +32,7 @@ def testObliqueManySeeds():
 
 
 def testObliqueDepth3():
-    """depth 3 also reaches level 2; each Look fit here takes seconds, so fewer seeds"""
+    """reaches level 2; slow, so fewer seeds"""
     for seed in range(2):
         for X, y in datasets(seed, 200):
             check(X, y, depth=3, lam=0.01, oblique=True, seed=seed)

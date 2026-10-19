@@ -13,7 +13,6 @@ def testStandardize():
 
 
 def testAxisThresholdsCountAndMedian():
-    """q = 5 thresholds per feature, and the median is one of them"""
     X, y = parity(2000, 2, 1, 0)
     Xs, mu, sd = standardize(X)
     ax = axisThresholds(Xs, 5)
@@ -37,7 +36,6 @@ def testEvenQRejected():
 
 
 def testBinarizeMatchesDefinition():
-    """columns match the definition, and column f sends about k/(q+1) of the data left"""
     X, y = parity(1200, 2, 0, 0)
     Xs, mu, sd = standardize(X)
     ax = axisThresholds(Xs, 5)
@@ -48,14 +46,14 @@ def testBinarizeMatchesDefinition():
         j, t = ax[f]
         for i in range(0, 1200, 97):
             assert B[i, f] == (Xs[i, j] <= t)
-    """feature 0, quantiles 1/6 ... 5/6"""
+    """feature 0 sends ~k/6 of the data left"""
     fr = B[:, :5].mean(axis=0)
     for k in range(5):
         assert abs(fr[k] - (k + 1) / 6) < 0.02
 
 
 def testBinaryFeatureCollapses():
-    """a 0/1 feature has only one useful threshold, so duplicates must collapse"""
+    """a 0/1 feature has one useful threshold, so duplicates collapse"""
     rng = np.random.default_rng(0)
     Xs = np.stack([rng.integers(0, 2, 500).astype(float), rng.normal(size=500)], axis=1)
     ax = axisThresholds(Xs, 5)

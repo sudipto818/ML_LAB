@@ -3,8 +3,7 @@ from lot.data import rotatedParity
 from lot.tree import LOT, gains, oneHot
 from demos.style import plt, save, scatterClasses, blue, orange, aqua
 
-"""Rotated parity: y = 1[x1 + x2 > 0] XOR 1[x3 - x4 > 0]. The right root split has zero gain,
-so only lookahead with oblique candidates (LOT) finds the four-leaf tree at depth 2"""
+"""the right root split has zero gain, so only LOT finds the 4-leaf tree at depth 2"""
 X, y = rotatedParity(1000, 0, 1)
 Xt, yt = rotatedParity(20000, 0, 101)
 
@@ -17,9 +16,7 @@ for name, la, ob in [("Greedy, axis", False, False), ("Look, axis", True, False)
           "| test error:", round(float(np.mean(m.predict(Xt) != yt)), 3))
     print()
 
-"""Figure 3 of the spec: (a) raw and (b) projected coordinates of the same 450 points, (c) gain at the
-root against the threshold quantile, computed by gains() on 40000 points (Lemma 15): the correct
-projection x1 + x2 and the axis test x1 sit at 0, the mixed x1 + x3 has a little gain"""
+"""spec Figure 3; gains on 40000 points (Lemma 15)"""
 Xg, yg = rotatedParity(40000, 0, 7)
 Yg = oneHot(yg, 2)
 qs = np.linspace(0.01, 0.99, 99)

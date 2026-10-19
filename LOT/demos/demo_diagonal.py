@@ -4,7 +4,7 @@ from lot.tree import LOT
 from demos.style import plt, save, blue, orange, aqua, ink2, blueTint, orangeTint, wrong
 from matplotlib.colors import ListedColormap
 
-"""Diagonal: y = 1[x1 + x2 > 0]. One oblique split is exact; an axis tree needs a staircase"""
+"""y = 1[x1 + x2 > 0]: one oblique split, or an axis staircase"""
 X, y = diagonal(1000, 0, 1)
 Xt, yt = diagonal(20000, 0, 101)
 
@@ -17,10 +17,7 @@ for name, la, ob in [("Greedy, axis", False, False), ("Look, axis", True, False)
           "| test error:", round(float(np.mean(m.predict(Xt) != yt)), 3))
     print()
 
-"""Figure 2 of the spec, from fitted trees: (a) the regions of the axis Look tree, (b) of LOT,
-(c) test error against leaves: the bound 1/(2S) of Proposition 9, axis Look trees over a lambda and
-qAx sweep (with qAx = 5 the staircase stops at ~10 leaves, Remark 5), and the single oblique split.
-Test error on the 20000 test points"""
+"""spec Figure 2; qAx = 5 alone stops the staircase at ~10 leaves (Remark 5), hence the qAx sweep"""
 g = np.linspace(-1, 1, 401)
 G1, G2 = np.meshgrid(g, g)
 grid = np.stack([G1.ravel(), G2.ravel()], axis=1)
@@ -28,7 +25,7 @@ truth = (grid[:, 0] + grid[:, 1] > 0).astype(int)
 
 
 def regions(ax, m, title):
-    """predicted class as a light tint, misclassified area in dark grey, true boundary dashed"""
+    """tint = predicted class, grey = wrong, dashed = true boundary"""
     pred = m.predict(grid)
     img = np.where(pred != truth, 2, pred).reshape(G1.shape)
     ax.imshow(img, origin="lower", extent=(-1, 1, -1, 1), cmap=ListedColormap([blueTint, orangeTint, wrong]),

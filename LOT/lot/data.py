@@ -1,7 +1,7 @@
 import numpy as np
 
 def parityLabels(X, r):
-    """y = XOR of 1[x_j > 0] over the first r features"""
+    """y = XOR of 1[x_j > 0], j < r"""
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -29,7 +29,7 @@ def rotatedParityLabels(X):
 
 
 def orthantLabels(X, p):
-    """class = index of the orthant of the first p features, in 0..2^p-1"""
+    """y = orthant of the first p features, 0..2^p-1"""
     n = len(X)
     y = np.zeros(n, dtype=int)
     for i in range(n):
@@ -49,7 +49,6 @@ def diagonalLabels(X):
     return y
 
 def parity(n, r, noise=0, seed=0):
-    """r informative features, `noise` extra features with no information"""
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, r + noise))
     y = parityLabels(X, r)
@@ -57,7 +56,6 @@ def parity(n, r, noise=0, seed=0):
 
 
 def rotatedParity(n, noise=0, seed=0):
-    """first 4 features matter, the rest are noise"""
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, 4 + noise))
     y = rotatedParityLabels(X)
@@ -65,7 +63,6 @@ def rotatedParity(n, noise=0, seed=0):
 
 
 def orthant(n, p, noise=0, seed=0):
-    """2^p classes, one per orthant of the first p features"""
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, p + noise))
     y = orthantLabels(X, p)
@@ -73,7 +70,6 @@ def orthant(n, p, noise=0, seed=0):
 
 
 def diagonal(n, noise=0, seed=0):
-    """two classes separated by the line x1 + x2 = 0"""
     rng = np.random.default_rng(seed)
     X = rng.uniform(-1, 1, (n, 2 + noise))
     y = diagonalLabels(X)
@@ -81,7 +77,7 @@ def diagonal(n, noise=0, seed=0):
 
 
 def trunk(n, p, seed=0):
-    """Trunk problem: two Gaussians with means +mu and -mu, mu_j = 1/sqrt(j), identity covariance"""
+    """Trunk: N(+mu, I) vs N(-mu, I), mu_j = 1/sqrt(j)"""
     rng = np.random.default_rng(seed)
     mu = 1 / np.sqrt(np.arange(1, p + 1))
     y = rng.integers(0, 2, n)

@@ -8,8 +8,7 @@ def error(m, X, y):
 
 
 def testLookSolvesXorAtDepth2():
-    """Look sees past the zero-gain root: on XOR it returns the 4-leaf tree
-    (root on one feature, both children on the other)"""
+    """Look sees past the zero-gain root: root on one feature, both children on the other"""
     for seed in range(8):
         X, y = parity(1000, 2, 0, seed)
         Xt, yt = parity(4000, 2, 0, 100 + seed)
@@ -22,7 +21,7 @@ def testLookSolvesXorAtDepth2():
 
 
 def checkProp1(X, y, depth, lam, gamma):
-    """Proposition 1: R(Look) <= R(Greedy) on the training objective, same candidates"""
+    """Proposition 12: R(Look) <= R(Greedy)"""
     g = LOT(depth=depth, lam=lam, gamma=gamma, lookahead=False).fit(X, y)
     l = LOT(depth=depth, lam=lam, gamma=gamma, lookahead=True).fit(X, y)
     assert l.cost <= g.cost + 1e-12

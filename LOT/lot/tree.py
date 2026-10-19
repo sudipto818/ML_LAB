@@ -3,7 +3,6 @@ from lot.oblique import sampleProjections, obliqueCandidates, project
 import numpy as np
 
 def oneHot(y, C):
-    """labels y (0..C-1) -> one-hot matrix of shape (N, C)"""
     N = len(y)
     Y = np.zeros((N, C))
     for i in range(N):
@@ -12,21 +11,18 @@ def oneHot(y, C):
 
 
 def entropy(counts):
-    """H = -summation (p log2 p) for every row of counts, with 0 log 0 = 0
-    counts is (k, C), or a single vector of length C"""
     counts = np.atleast_2d(counts).astype(float)
     n = counts.sum(axis=1, keepdims=True)
-    safeN = np.where(n > 0, n, 1)          
+    safeN = np.where(n > 0, n, 1)
     p = counts / safeN
-    """log2(1) = 0, so these terms vanish"""
+    """0 log 0 = 0"""
     safeP = np.where(p > 0, p, 1)
     h = -(p * np.log2(safeP)).sum(axis=1)
     return h
 
 
 def leafCost(Y, idx, lam):
-    """u(D) = lam + (|D| - max_c n_c(D)) / N, always divided by the root N
-    Y is the one-hot matrix of the whole training set, idx are the samples in this node"""
+    """u(D) = lam + (|D| - max_c n_c) / N, with N the root size, not |D|"""
     N = len(Y)
     cnt = Y[idx].sum(axis=0)
     pred = int(np.argmax(cnt))
@@ -35,15 +31,10 @@ def leafCost(Y, idx, lam):
 
 
 def gains(M, Yd):
-    """information gain of every candidate test in one shot
-    M  : (n, k) boolean, M[i, f] = True if sample i goes left under test f
-    Yd : (n, C) one-hot labels of the samples in this node"""
+    """information gain of every column of M (True = left) at once"""
     n = len(Yd)
-    """class counts of the node"""
     tot = Yd.sum(axis=0)
-    """(k, C) class counts going left"""
     L = M.T.astype(float) @ Yd
-    """(k, C) class counts going right"""
     R = tot[None, :] - L
     nl = L.sum(axis=1)
     nr = R.sum(axis=1)
@@ -52,8 +43,7 @@ def gains(M, Yd):
 
 
 def pick(score, cs):
-    """lowest score wins; scores are rounded to 12 digits so ties are stable,
-    a tie goes to the lower cost, and then to the lower index"""
+    """argmin, rounded to 12 digits; a tie goes to the lower c, then the lower index"""
     s = np.round(score, 12)
     best = 0
     for f in range(1, len(s)):
@@ -62,16 +52,14 @@ def pick(score, cs):
     return best
 
 
-"""the schedules s(level) of spec 6.8, for levels 0..3 (depth 4)"""
+"""s(level) schedules of spec 6.8"""
 schedules = {"flat": (3, 3, 3, 3), "rootHeavy": (3, 3, 2, 1), "tailHeavy": (1, 1, 3, 3)}
 
 
 class LOT:
     def __init__(self, depth=4, lam=0.005, gamma=0.0, lookahead=False, oblique=False,
                  qAx=5, s=3, m=30, q=3, nMin=5, seed=0):
-        """lookahead=False -> greedy, lookahead=True -> look (LicketySPLIT while only axis tests are used)
-        oblique=True adds sparse projections: up to s non-zeros, m per support size, q thresholds each
-        s is one number (the same at every level) or a schedule with one entry per level, s[0] at the root"""
+        """s is one int or a per-level schedule, s[0] at the root"""
         self.depth = depth
         self.lam = lam
         self.gamma = gamma
@@ -92,7 +80,7 @@ class LOT:
         self.Y = oneHot(y, self.C)
         ax = axisThresholds(self.Xs, self.qAx)
         self.B = binarize(self.Xs, ax)
-        """a test is stored as (features used, signs, threshold); an axis test uses one feature"""
+        """a test is (support, signs, threshold); axis: ((j,), (1,), t)"""
         self.meta = []
         for (j, t) in ax:
             self.meta.append(((j,), (1,), t))
@@ -104,10 +92,7 @@ class LOT:
         return self
 
     def candidates(self, idx, depth):
-        """valid tests for the samples idx: at least nMin samples on each side
-        axis columns come first, oblique ones after, so on a tie the lower index keeps the axis test
-        level = self.depth - depth is the same whether greedy or look reaches this node, so both
-        see the same projections (Proposition 12 needs that)"""
+        """axis columns first so a tie keeps the axis test; same node -> same projections (Prop. 12)"""
         M = self.B[idx]
         allMeta = self.meta
         level = self.depth - depth
@@ -126,7 +111,7 @@ class LOT:
 
     def greedy(self, idx, depth):
         u, pred = leafCost(self.Y, idx, self.lam)
-        """out of depth, or the node is already pure"""
+        """u = lam means the node is pure"""
         if depth == 0 or u - self.lam < 1e-12:
             return u, ("leaf", pred)
         M, meta = self.candidates(idx, depth)
@@ -136,10 +121,10 @@ class LOT:
         cs = []
         for m in meta:
             cs.append(len(m[0]) - 1)
+        """Algorithm 1: pick by gain alone, gamma only enters the split-or-leaf test"""
         f = pick(-g, cs)
         cl, tl = self.greedy(idx[M[:, f]], depth - 1)
         cr, tr = self.greedy(idx[~M[:, f]], depth - 1)
-        """Objective cost of candiate split via recursion"""
         v = self.gamma * cs[f] + cl + cr
         if v < u:
             return v, ("split", meta[f], tl, tr)
@@ -155,16 +140,15 @@ class LOT:
         cs = []
         for m in meta:
             cs.append(len(m[0]) - 1)
+        """Algorithm 2: score every split by greedy completions of its children"""
         vals = np.zeros(len(meta))
         for f in range(len(meta)):
-            """children are scored by Greedy"""
             cl, _ = self.greedy(idx[M[:, f]], depth - 1)
             cr, _ = self.greedy(idx[~M[:, f]], depth - 1)
             vals[f] = self.gamma * cs[f] + cl + cr
         f = pick(vals, cs)
         if vals[f] >= u:
             return u, ("leaf", pred)
-        """the chosen split recurses with Look"""
         cl, tl = self.look(idx[M[:, f]], depth - 1)
         cr, tr = self.look(idx[~M[:, f]], depth - 1)
         return self.gamma * cs[f] + cl + cr, ("split", meta[f], tl, tr)

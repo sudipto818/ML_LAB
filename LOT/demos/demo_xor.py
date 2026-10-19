@@ -3,7 +3,6 @@ from lot.data import parity
 from lot.tree import LOT, gains, oneHot
 from demos.style import plt, save, scatterClasses, blue, orange, ink2
 
-"""XOR: y = 1[x1 > 0] XOR 1[x2 > 0]"""
 X, y = parity(1000, 2, 0, 1)
 Xt, yt = parity(4000, 2, 0, 101)
 
@@ -15,9 +14,7 @@ for name, la in [("Greedy", False), ("Look", True)]:
           "| test error:", round(float(np.mean(m.predict(Xt) != yt)), 3))
     print()
 
-"""Figure 1 of the spec: (a) the data, (b) information gain against threshold, computed by gains()
-on 20000 simulated points: every root split x1 <= tau has gain ~0, but inside {x1 <= 0} the split
-x2 <= tau reaches ~1 bit at tau = 0 (Lemma 6)"""
+"""spec Figure 1; gains on 20000 points (Lemma 6)"""
 Xg, yg = parity(20000, 2, 0, 7)
 Yg = oneHot(yg, 2)
 taus = np.linspace(-0.98, 0.98, 99)
