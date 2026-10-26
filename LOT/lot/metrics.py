@@ -8,6 +8,17 @@ def errorRate(yTrue, yPred):
     return wrong / len(yTrue)
 
 
+def kappa(yTrue, yPred):
+    """Cohen's kappa = (po - pe) / (1 - pe), pe from the true and predicted class frequencies"""
+    yTrue = np.asarray(yTrue)
+    yPred = np.asarray(yPred)
+    po = np.mean(yTrue == yPred)
+    pe = 0.0
+    for c in np.union1d(yTrue, yPred):
+        pe += np.mean(yTrue == c) * np.mean(yPred == c)
+    return (po - pe) / (1 - pe)
+
+
 def countLeaves(node):
     if node[0] == "leaf":
         return 1
