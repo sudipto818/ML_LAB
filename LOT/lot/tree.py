@@ -58,8 +58,9 @@ schedules = {"flat": (3, 3, 3, 3), "rootHeavy": (3, 3, 2, 1), "tailHeavy": (1, 1
 
 class LOT:
     def __init__(self, depth=4, lam=0.005, gamma=0.0, lookahead=False, oblique=False,
-                 qAx=5, s=3, m=30, q=3, nMin=5, seed=0):
-        """s is one int or a per-level schedule, s[0] at the root"""
+                 qAx=5, s=3, m=30, q=3, nMin=5, seed=0, numeric=None, screen=0, axisLocal=False):
+        """s is one int or a per-level schedule, s[0] at the root
+        numeric: the features projections may use (spec 9: numeric only); screen, axisLocal: ablations of 8.4"""
         self.depth = depth
         self.lam = lam
         self.gamma = gamma
@@ -72,6 +73,9 @@ class LOT:
         self.q = q
         self.nMin = nMin
         self.seed = seed
+        self.numeric = numeric
+        self.screen = screen
+        self.axisLocal = axisLocal
 
     def fit(self, X, y):
         self.Xs, self.mu, self.sd = standardize(X)
@@ -84,6 +88,9 @@ class LOT:
         self.meta = []
         for (j, t) in ax:
             self.meta.append(((j,), (1,), t))
+        p = self.Xs.shape[1]
+        self.num = np.arange(p) if self.numeric is None else np.sort(np.array(self.numeric))
+        self.axisProjs = [((j,), (1,)) for j in range(p)]
         idx = np.arange(self.N)
         if self.lookahead:
             self.cost, self.tree = self.look(idx, self.depth)
@@ -93,14 +100,20 @@ class LOT:
 
     def candidates(self, idx, depth):
         """axis columns first so a tie keeps the axis test; same node -> same projections (Prop. 12)"""
-        M = self.B[idx]
-        allMeta = self.meta
+        if self.axisLocal:
+            """threshold control: axis thresholds from this node's quantiles, like the oblique ones"""
+            M, allMeta = obliqueCandidates(self.Xs, idx, self.axisProjs, self.qAx)
+        else:
+            M = self.B[idx]
+            allMeta = self.meta
         level = self.depth - depth
         if self.oblique and self.s[level] >= 2:
-            projs = sampleProjections(self.Xs.shape[1], self.s[level], self.m, idx, level, self.seed)
+            projs = sampleProjections(len(self.num), self.s[level], self.m, idx, level, self.seed)
+            for f in range(len(projs)):
+                projs[f] = (tuple(int(self.num[j]) for j in projs[f][0]), projs[f][1])
             Mo, metaO = obliqueCandidates(self.Xs, idx, projs, self.q)
             M = np.hstack([M, Mo])
-            allMeta = self.meta + metaO
+            allMeta = allMeta + metaO
         nl = M.sum(axis=0)
         n = len(idx)
         keep = np.flatnonzero((nl >= self.nMin) & (n - nl >= self.nMin))
@@ -137,6 +150,11 @@ class LOT:
         M, meta = self.candidates(idx, depth)
         if len(meta) == 0:
             return u, ("leaf", pred)
+        if self.screen > 0 and len(meta) > self.screen:
+            """H6 ablation: look only at the top gains, which Remark 17 warns against"""
+            top = np.sort(np.argsort(-gains(M, self.Y[idx]), kind="stable")[:self.screen])
+            M = M[:, top]
+            meta = [meta[f] for f in top]
         cs = []
         for m in meta:
             cs.append(len(m[0]) - 1)
