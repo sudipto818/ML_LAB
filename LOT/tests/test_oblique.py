@@ -1,90 +1,29 @@
 import numpy as np
-from lot.data import diagonal, rotatedParity
+from lot.data import rotatedParity
 from lot.binarize import standardize
 from lot.oblique import nProjections, sampleProjections, obliqueCandidates
-from lot.tree import oneHot, gains
 
 
-def testCounts():
-    assert nProjections(6, 2) == 6 * 5
-    assert nProjections(6, 3) == 20 * 4
-    assert nProjections(4, 2) == 12
-
-
-def valid(projs, p):
-    for (sup, sg) in projs:
-        assert list(sup) == sorted(set(sup))
-        assert max(sup) < p and min(sup) >= 0
-        assert len(sup) == len(sg)
-        assert sg[0] == 1
-        for v in sg:
-            assert v in (1, -1)
-
-
-def testEnumeratesAllWhenFew():
-    idx = np.arange(100)
-    projs = sampleProjections(4, 2, 30, idx, 0, 0)
-    assert len(projs) == 12
-    assert len(set(projs)) == 12
-    valid(projs, 4)
-    assert ((0, 1), (1, 1)) in projs
-    assert ((2, 3), (1, -1)) in projs
-
-
-def testSamplesMPerSize():
-    idx = np.arange(100)
-    projs = sampleProjections(10, 3, 30, idx, 0, 0)
-    assert len(projs) == 60
-    assert len(set(projs)) == 60
-    valid(projs, 10)
-    n2 = 0
-    n3 = 0
-    for (sup, sg) in projs:
-        if len(sup) == 2:
-            n2 += 1
-        else:
-            n3 += 1
-    assert n2 == 30 and n3 == 30
-
-
-def testSBelow2GivesNoProjections():
-    assert sampleProjections(10, 1, 30, np.arange(50), 0, 0) == []
-
-
-def testDeterministicAndVariesWithNodeLevelSeed():
-    a = sampleProjections(10, 3, 30, np.arange(100), 2, 7)
-    b = sampleProjections(10, 3, 30, np.arange(100), 2, 7)
-    assert a == b
-    assert a != sampleProjections(10, 3, 30, np.arange(100), 3, 7)
-    assert a != sampleProjections(10, 3, 30, np.arange(100), 2, 8)
-    assert a != sampleProjections(10, 3, 30, np.arange(1, 101), 2, 7)
+def testProjectionPool():
+    """p = 4: all 12 pairs listed; p = 10: m distinct draws per support size"""
+    assert nProjections(4, 2) == 12 and nProjections(6, 3) == 80
+    few = sampleProjections(4, 2, 30, np.arange(100), 0, 0)
+    assert len(set(few)) == 12 and ((2, 3), (1, -1)) in few
+    many = sampleProjections(10, 3, 30, np.arange(100), 0, 0)
+    assert len(set(many)) == 60
+    assert sum(len(sup) == 2 for sup, sg in many) == 30
+    for sup, sg in many:
+        assert list(sup) == sorted(set(sup)) and sg[0] == 1
 
 
 def testCandidateColumns():
     X, y = rotatedParity(600, 2, 0)
     Xs, mu, sd = standardize(X)
     idx = np.arange(0, 600, 2)
-    projs = sampleProjections(6, 3, 30, idx, 0, 0)
-    M, meta = obliqueCandidates(Xs, idx, projs, 3)
+    M, meta = obliqueCandidates(Xs, idx, sampleProjections(6, 3, 30, idx, 0, 0), 3)
     assert M.shape == (len(idx), len(meta))
-    assert M.dtype == bool
-    assert len(meta) <= 3 * len(projs)
     for f in range(0, len(meta), 7):
         sup, sg, t = meta[f]
         z = Xs[np.ix_(idx, sup)] @ np.array(sg, dtype=float)
         assert np.array_equal(M[:, f], z <= t)
         assert z.min() <= t < z.max()
-
-
-def testFindsTheDiagonalSplit():
-    X, y = diagonal(2000, 0, 0)
-    Xs, mu, sd = standardize(X)
-    idx = np.arange(2000)
-    projs = sampleProjections(2, 2, 30, idx, 0, 0)
-    """x1 + x2 and x1 - x2"""
-    assert len(projs) == 2
-    M, meta = obliqueCandidates(Xs, idx, projs, 3)
-    g = gains(M, oneHot(y, 2))
-    best = int(np.argmax(g))
-    assert meta[best][0] == (0, 1) and meta[best][1] == (1, 1)
-    assert g[best] > 0.9

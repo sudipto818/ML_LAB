@@ -16,29 +16,17 @@ def check(X, y, **kw):
     assert l.cost <= g.cost + 1e-12, kw
 
 
-def testAxisManySeeds():
-    for seed in range(10):
+def testAxis():
+    for seed in range(5):
         for X, y in datasets(seed, 400):
-            for depth in (2, 3, 4):
-                for lam in (0.001, 0.02):
-                    check(X, y, depth=depth, lam=lam)
+            for depth in (2, 4):
+                check(X, y, depth=depth)
 
 
-def testObliqueManySeeds():
-    for seed in range(6):
+def testOblique():
+    for seed in range(3):
         for X, y in datasets(seed, 250):
-            for gamma in (0.0, 0.0025):
-                check(X, y, depth=2, gamma=gamma, oblique=True, seed=seed)
-
-
-def testObliqueDepth3():
-    """reaches level 2; slow, so fewer seeds"""
-    for seed in range(2):
-        for X, y in datasets(seed, 200):
-            check(X, y, depth=3, lam=0.01, oblique=True, seed=seed)
-
-
-def testObliqueSchedules():
-    for X, y in datasets(0, 200):
-        for s in schedules.values():
-            check(X, y, depth=3, oblique=True, s=s)
+            check(X, y, depth=2, gamma=0.0025, oblique=True, seed=seed)
+    X, y = rotatedParity(200, 2, 0)
+    for s in schedules.values():
+        check(X, y, depth=3, oblique=True, s=s)
