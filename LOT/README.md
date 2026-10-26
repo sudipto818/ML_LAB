@@ -31,22 +31,39 @@ From inside `LOT/`:
 python -m pytest
 ```
 
+## Run the experiments
+
+From inside `LOT/`, in this order:
+
+```bash
+python fetch_data.py               # balance-scale, wdbc (UCI API), vehicle (statlog files), COMPAS; needs curl
+python run_2x2.py                  # 4 variants x 11 datasets x 5 folds x 3 seeds x lambda grid -> results/runs.csv
+python ablations.py                # schedule, screening, depth, threshold control -> results/ablations.csv
+python make_plots.py               # results/headline.md, headline.csv and the figures
+python -m demos.demo_xor           # one script per concept demonstration (spec Table 2)
+```
+
+`run_2x2.py` and `ablations.py` use every core but one and resume where they stopped if interrupted.
+
 ## Layout
 
 | Folder | Contents |
 |---|---|
 | `lot/` | the method: data generators, thresholds, projections, tree, metrics |
 | `tests/` | unit tests, including checks that lookahead never does worse than greedy on the training objective |
-| `demos/` | XOR, diagonal boundary and rotated parity examples |
-| `results/` | experiment outputs |
+| `demos/` | one script per concept: XOR, diagonal, rotated parity, sparse vs dense, projection count |
+| `results/` | `runs.csv`, `ablations.csv`, `headline.md`, `figures/` |
+| `datasets/` | downloaded by `fetch_data.py`, not committed |
 
 ## Status
 
-- [ ] Data generators
-- [ ] Scoring core (entropy, gains, leaf cost)
-- [ ] Axis-only greedy and lookahead
-- [ ] Oblique candidates
-- [ ] Experiments and report
+- [x] Data generators, CSV loading, stratified folds
+- [x] Scoring core (entropy, gains, leaf cost)
+- [x] Axis-only greedy and lookahead
+- [x] Oblique candidates, schedules s(level), feature penalty gamma
+- [x] Concept demonstrations (spec Table 2)
+- [x] 2 x 2 study and ablations (spec 8.2, 8.4)
+- [ ] Report and presentation
 
 ## References
 
