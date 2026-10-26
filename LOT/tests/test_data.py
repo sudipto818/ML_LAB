@@ -1,70 +1,17 @@
 import numpy as np
-from lot.data import (parity, rotatedParity, orthant, diagonal, trunk,parityLabels, rotatedParityLabels)
+from lot.data import rotatedParityLabels, stratifiedFolds
 
 
-def testParityRule():
-    X = np.array([[0.3, 0.7], [0.3, -0.7], [-0.3, 0.7], [-0.3, -0.7],
-                  [0.9, 0.1], [0.9, -0.1], [-0.9, 0.1], [-0.9, -0.1],
-                  [0.01, 0.02], [-0.01, 0.02]])
-    expected = [0, 1, 1, 0, 0, 1, 1, 0, 0, 1]
-    y = parityLabels(X, 2)
-    for i in range(10):
-        assert y[i] == expected[i]
+def testRotatedParityLabels():
+    X = np.array([[1, 1, 1, 0], [1, 1, -1, 0], [-1, -1, 1, 0], [-1, -1, -1, 0]])
+    assert list(rotatedParityLabels(X)) == [0, 1, 1, 0]
 
 
-def testRotatedParityRule():
-    X = np.array([[1, 1, 1, 0], [1, 1, -1, 0], [-1, -1, 1, 0], [-1, -1, -1, 0],
-                  [0.5, -0.2, 0, -1], [0.2, -0.5, 0, 1], [0.2, -0.5, 0, -1],
-                  [0.5, -0.2, 0, 1], [-0.3, 0.1, 0.1, 0.5], [-0.3, 0.1, 0.5, 0.1]])
-    expected = [0, 1, 1, 0, 0, 0, 1, 1, 0, 1]
-    y = rotatedParityLabels(X)
-    for i in range(10):
-        assert y[i] == expected[i]
-
-
-def checkBinary(X, y, n, p):
-    assert X.shape == (n, p)
-    assert y.shape == (n,)
-    assert set(np.unique(y)) == {0, 1}
-    assert abs(y.mean() - 0.5) < 0.05
-
-
-def testBinaryGenerators():
-    n = 4000
-    X, y = parity(n, 2, 3, 0)
-    checkBinary(X, y, n, 5)
-    X, y = parity(n, 3, 0, 0)
-    checkBinary(X, y, n, 3)
-    X, y = rotatedParity(n, 2, 0)
-    checkBinary(X, y, n, 6)
-    X, y = diagonal(n, 2, 0)
-    checkBinary(X, y, n, 4)
-    X, y = trunk(n, 5, 0)
-    checkBinary(X, y, n, 5)
-
-
-def testOrthant():
-    n = 8000
-    X, y = orthant(n, 3, 2, 0)
-    assert X.shape == (n, 5)
-    assert set(np.unique(y)) == set(range(8))
-    for c in range(8):
-        frac = np.mean(y == c)
-        assert abs(frac - 1 / 8) < 0.03
-
-
-def testSeed():
-    X1, y1 = rotatedParity(100, 2, 7)
-    X2, y2 = rotatedParity(100, 2, 7)
-    X3, y3 = rotatedParity(100, 2, 8)
-    assert np.array_equal(X1, X2) and np.array_equal(y1, y2)
-    assert not np.array_equal(X1, X3)
-
-
-def testTrunkMeans():
-    X, y = trunk(20000, 4, 0)
-    m1 = X[y == 1].mean(axis=0)
-    m0 = X[y == 0].mean(axis=0)
-    for j in range(4):
-        assert m1[j] > 0
-        assert m0[j] < 0
+def testStratifiedFolds():
+    y = np.array([0] * 53 + [1] * 31 + [2] * 16)
+    fold = stratifiedFolds(y, 5, 0)
+    for c in range(3):
+        cnt = np.bincount(fold[y == c], minlength=5)
+        assert cnt.max() - cnt.min() <= 1
+    sizes = np.bincount(fold, minlength=5)
+    assert sizes.max() - sizes.min() <= 1

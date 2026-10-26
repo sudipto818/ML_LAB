@@ -88,3 +88,42 @@ def trunk(n, p, seed=0):
         else:
             X[i] -= mu
     return X, y
+
+
+def ringnorm(n, seed=0):
+    """Breiman's ringnorm, p = 20: N(0, 4I) vs N(a, I), a_j = 2/sqrt(20)"""
+    rng = np.random.default_rng(seed)
+    p = 20
+    y = rng.integers(0, 2, n)
+    X = rng.normal(size=(n, p))
+    for i in range(n):
+        if y[i] == 0:
+            X[i] *= 2
+        else:
+            X[i] += 2 / np.sqrt(p)
+    return X, y
+
+
+def loadCsv(path):
+    """header row, numeric features, class 0..C-1 in the last column"""
+    A = np.loadtxt(path, delimiter=",", skiprows=1)
+    return A[:, :-1], A[:, -1].astype(int)
+
+
+def subsample(X, y, n, seed=0):
+    if len(y) <= n:
+        return X, y
+    idx = np.sort(np.random.default_rng(seed).permutation(len(y))[:n])
+    return X[idx], y[idx]
+
+
+def stratifiedFolds(y, k, seed):
+    """fold id per sample: each class shuffled, then dealt round-robin, continuing across classes"""
+    rng = np.random.default_rng(seed)
+    fold = np.zeros(len(y), dtype=int)
+    start = 0
+    for c in np.unique(y):
+        idx = rng.permutation(np.flatnonzero(y == c))
+        fold[idx] = (start + np.arange(len(idx))) % k
+        start += len(idx)
+    return fold
