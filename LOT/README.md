@@ -1,6 +1,6 @@
 # LOT: Lookahead Oblique Trees
 
-LOT is a decision-tree learner that combines two ideas from the two papers: the lookahead scoring of **SPLIT** (*Near-Optimal Decision Trees in a SPLIT Second*, ICML 2025) and the sparse oblique splits of **SPORF** (*Sparse Projection Oblique Randomer Forests*, JMLR 2020). It is written in Python, as a project for DA322 (Machine Learning), IIT Guwahati.
+LOT is a decision-tree learner that combines two ideas from the two papers: the lookahead scoring of **SPLIT** (*Near-Optimal Decision Trees in a SPLIT Second*, ICML 2025) and the sparse oblique splits of **SPORF** (*Sparse Projection Oblique Randomer Forests*, JMLR 2020). 
 
 ## Idea
 
@@ -55,15 +55,7 @@ python -m demos.demo_xor           # one script per concept demonstration (spec 
 | `results/` | `runs.csv`, `ablations.csv`, `headline.md`, `figures/` |
 | `datasets/` | downloaded by `fetch_data.py`, not committed |
 
-## Status
 
-- [x] Data generators, CSV loading, stratified folds
-- [x] Scoring core (entropy, gains, leaf cost)
-- [x] Axis-only greedy and lookahead
-- [x] Oblique candidates, schedules s(level), feature penalty gamma
-- [x] Concept demonstrations (spec Table 2)
-- [x] 2 x 2 study and ablations (spec 8.2, 8.4)
-- [ ] Report and presentation
 
 ## References
 
