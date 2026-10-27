@@ -13,7 +13,7 @@ def fetch(url, name):
     path = os.path.join(raw, name)
     if not os.path.exists(path):
         print("downloading", url)
-        subprocess.run(["curl", "-sSfL", "--retry", "3", "--max-time", "120", "-o", path, url], check=True)
+        subprocess.run(["curl", "-sSfL", "--retry", "3", "--max-time", "120", "--ssl-no-revoke", "-o", path, url], check=True)
     return open(path, newline="").read()
 
 
