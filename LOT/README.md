@@ -16,7 +16,7 @@ pip install -r requirements.txt
 From inside `LOT/`:
 
 ```bash
-python -m pytest                     # tests
+python -m pytest tests.py            # tests
 python fetch.py                      # download the real datasets (needs curl)
 python experiment.py                 # main experiment -> results/runs.csv
 python ablations.py                  # ablations -> results/ablations.csv
@@ -27,7 +27,7 @@ python demo.py                       # LOT vs the other 3 on rotated parity, 2 s
 ## Folders
 
 - `lot/` the tree, data, projections, metrics
-- `tests/` unit tests
+- `tests.py` the important checks
 - `results/` csv files and figures
 
 ## References
