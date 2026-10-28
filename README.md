@@ -3,7 +3,7 @@
 Sudipto Ghosh (240150042)
 Badri Bishal Das (240150006)
 
-DA322 Machine Learning Lab, IIT Guwahati.
+DA3011L Machine Learning Lab, IIT Guwahati.
 
 Our project is LOT (Lookahead Oblique Trees). It is a decision tree that mixes two ideas:
 
