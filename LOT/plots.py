@@ -187,7 +187,7 @@ last.legend(loc="center", title=r"one point per $\lambda \in \{%s\}$" % ", ".joi
 last.text(0.5, 0.12, "a hidden marker lies under LOT:\nthose variants found the same trees", transform=last.transAxes,
           ha="center", fontsize=8, color=ink2)
 fig.tight_layout()
-save(fig, "lambda_sweep.png")
+save(fig, "lambda.png")
 
 """figure: ablations"""
 abl = load(os.path.join(res, "ablations.csv"))
