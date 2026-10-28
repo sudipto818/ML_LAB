@@ -1,14 +1,6 @@
+from runner import doneRows, runAll
 import os
-
-"""one BLAS thread per process: the pool already uses every core"""
-os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
-os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
-os.environ.setdefault("OMP_NUM_THREADS", "1")
-
-import csv
-import sys
 import time
-from multiprocessing import Pool
 import numpy as np
 from lot.data import parity, rotatedParity, diagonal, orthant, trunk, ringnorm, loadCsv, subsample, stratifiedFolds
 from lot.tree import LOT
@@ -84,27 +76,8 @@ def allJobs():
     return jobs
 
 
-def doneJobs():
-    done = set()
-    if os.path.exists(outPath):
-        for r in csv.DictReader(open(outPath)):
-            done.add((r["dataset"], int(r["seed"]), int(r["fold"]), float(r["lam"]), float(r["gamma"])))
-    return done
-
-
 if __name__ == "__main__":
-    os.makedirs(os.path.dirname(outPath), exist_ok=True)
-    done = doneJobs()
-    jobs = [j for j in allJobs() if j not in done]
-    print(len(jobs), "jobs to run,", len(done), "already done", flush=True)
-    fresh = not os.path.exists(outPath)
-    out = open(outPath, "a", newline="")
-    w = csv.writer(out)
-    if fresh:
-        w.writerow(header)
-    t0 = time.time()
-    with Pool(int(sys.argv[1]) if len(sys.argv) > 1 else os.cpu_count() - 1) as pool:
-        for k, rows in enumerate(pool.imap_unordered(runJob, jobs)):
-            w.writerows(rows)
-            out.flush()
-            print(k + 1, "/", len(jobs), rows[0][0], "%.0fs" % (time.time() - t0), flush=True)
+    done = set()
+    for r in doneRows(outPath):
+        done.add((r["dataset"], int(r["seed"]), int(r["fold"]), float(r["lam"]), float(r["gamma"])))
+    runAll(outPath, header, [j for j in allJobs() if j not in done], runJob)

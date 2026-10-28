@@ -1,14 +1,6 @@
+from runner import doneRows, runAll
 import os
-
-"""one BLAS thread per process: the pool already uses every core"""
-os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
-os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
-os.environ.setdefault("OMP_NUM_THREADS", "1")
-
-import csv
-import sys
 import time
-from multiprocessing import Pool
 import numpy as np
 from lot.data import stratifiedFolds
 from lot.tree import LOT, schedules
@@ -59,9 +51,8 @@ def runJob(job):
 
 if __name__ == "__main__":
     done = set()
-    if os.path.exists(outPath):
-        for r in csv.DictReader(open(outPath)):
-            done.add((r["ablation"], r["setting"], r["dataset"], int(r["seed"]), int(r["fold"])))
+    for r in doneRows(outPath):
+        done.add((r["ablation"], r["setting"], r["dataset"], int(r["seed"]), int(r["fold"])))
     jobs = []
     for ablation, setting, names, vs, kw in settings:
         for name in names:
@@ -69,15 +60,4 @@ if __name__ == "__main__":
                 for fold in range(nFolds):
                     if (ablation, setting, name, seed, fold) not in done:
                         jobs.append((ablation, setting, name, seed, fold, vs, kw))
-    print(len(jobs), "jobs to run,", len(done), "already done", flush=True)
-    fresh = not os.path.exists(outPath)
-    out = open(outPath, "a", newline="")
-    w = csv.writer(out)
-    if fresh:
-        w.writerow(header)
-    t0 = time.time()
-    with Pool(int(sys.argv[1]) if len(sys.argv) > 1 else os.cpu_count() - 1) as pool:
-        for k, rows in enumerate(pool.imap_unordered(runJob, jobs)):
-            w.writerows(rows)
-            out.flush()
-            print(k + 1, "/", len(jobs), rows[0][0], rows[0][1], rows[0][2], "%.0fs" % (time.time() - t0), flush=True)
+    runAll(outPath, header, jobs, runJob)
