@@ -34,23 +34,72 @@ python demo.py                       # LOT vs the other 3 on rotated parity, 2 s
 ## Results
 
 All numbers are measured, from `results/`. Settings: depth 4, lambda = 0.005, gamma = lambda/2,
-5-fold stratified CV repeated with 3 seeds (15 runs per cell).
+5-fold stratified CV repeated with 3 seeds (15 runs per cell, mean shown). This is SPORF's protocol
+(5-fold CV, Cohen's kappa) repeated 3 times.
 
-### Accuracy
+Datasets: the synthetic problems of SPORF plus `rotatedParity`, which we built to need both ideas, and
+real datasets used in SPLIT or SPORF. Datasets over 2000 rows (Spambase, MAGIC, COMPAS) are subsampled to 2000.
 
-Test accuracy (%), mean of 15 runs:
+### Accuracy, kappa and error
 
-| Dataset | Greedy axis | Look axis | Greedy oblique | LOT |
-|---|---|---|---|---|
-| Rotated parity (synthetic) | 68.8 | 75.1 | 82.2 | **98.1** |
-| Balance-scale | 74.2 | 75.8 | 84.8 | **87.0** |
-| Vehicle | 65.7 | 67.3 | 67.8 | **70.7** |
-| WDBC | **94.6** | **94.6** | 94.3 | 93.9 |
-| COMPAS | 66.4 | 66.3 | **66.8** | 66.5 |
+Test accuracy (%):
 
-- Rotated parity needs both ideas: its first split is oblique and has zero gain. Only LOT solves it.
-- On real data most of the gain comes from oblique splits. WDBC and COMPAS show no gain.
-- Lookahead never did worse than greedy on the training objective: 1650 out of 1650 runs.
+| Dataset | From | Greedy axis | Look axis | Greedy oblique | LOT |
+|---|---|---|---|---|---|
+| parity3 | SPORF | 66.2 | **97.6** | 76.8 | **97.6** |
+| rotatedParity | ours | 68.8 | 75.1 | 82.2 | **98.1** |
+| orthant | SPORF | **97.9** | **97.9** | **97.9** | **97.9** |
+| trunk | SPORF | 86.3 | 85.9 | 89.8 | **90.4** |
+| ringnorm | SPORF | 76.5 | **76.8** | 75.1 | 76.6 |
+| *real data* | | | | | |
+| balanceScale | SPORF | 74.2 | 75.8 | 84.8 | **87.0** |
+| vehicle | SPORF | 65.7 | 67.3 | 67.8 | **70.7** |
+| wdbc | SPORF | **94.6** | **94.6** | 94.3 | 93.9 |
+| wine | SPORF | 92.9 | 93.1 | 92.5 | **93.7** |
+| spambase | SPLIT, SPORF | 88.5 | 90.0 | 89.3 | **90.3** |
+| magic | SPORF | 79.8 | 80.0 | 79.8 | **82.0** |
+| compas | SPLIT | 66.4 | 66.3 | **66.8** | 66.5 |
+
+Cohen's kappa (0 = chance, 1 = perfect):
+
+| Dataset | From | Greedy axis | Look axis | Greedy oblique | LOT |
+|---|---|---|---|---|---|
+| parity3 | SPORF | 0.320 | **0.953** | 0.535 | 0.951 |
+| rotatedParity | ours | 0.371 | 0.499 | 0.640 | **0.963** |
+| orthant | SPORF | **0.976** | **0.976** | **0.976** | **0.976** |
+| trunk | SPORF | 0.726 | 0.717 | 0.795 | **0.807** |
+| ringnorm | SPORF | 0.527 | **0.534** | 0.502 | 0.531 |
+| *real data* | | | | | |
+| balanceScale | SPORF | 0.521 | 0.551 | 0.719 | **0.760** |
+| vehicle | SPORF | 0.543 | 0.564 | 0.571 | **0.610** |
+| wdbc | SPORF | **0.884** | **0.884** | 0.877 | 0.867 |
+| wine | SPORF | 0.892 | 0.896 | 0.886 | **0.904** |
+| spambase | SPLIT, SPORF | 0.757 | 0.788 | 0.775 | **0.796** |
+| magic | SPORF | 0.524 | 0.551 | 0.544 | **0.595** |
+| compas | SPLIT | 0.319 | 0.319 | **0.331** | 0.324 |
+
+Test error:
+
+| Dataset | From | Greedy axis | Look axis | Greedy oblique | LOT |
+|---|---|---|---|---|---|
+| parity3 | SPORF | 0.338 | **0.024** | 0.232 | **0.024** |
+| rotatedParity | ours | 0.312 | 0.249 | 0.178 | **0.019** |
+| orthant | SPORF | **0.021** | **0.021** | **0.021** | **0.021** |
+| trunk | SPORF | 0.137 | 0.141 | 0.102 | **0.096** |
+| ringnorm | SPORF | 0.235 | **0.232** | 0.249 | 0.234 |
+| *real data* | | | | | |
+| balanceScale | SPORF | 0.258 | 0.242 | 0.152 | **0.130** |
+| vehicle | SPORF | 0.343 | 0.327 | 0.322 | **0.293** |
+| wdbc | SPORF | **0.054** | **0.054** | 0.057 | 0.061 |
+| wine | SPORF | 0.071 | 0.069 | 0.075 | **0.063** |
+| spambase | SPLIT, SPORF | 0.115 | 0.100 | 0.107 | **0.097** |
+| magic | SPORF | 0.202 | 0.200 | 0.202 | **0.180** |
+| compas | SPLIT | 0.336 | 0.337 | **0.332** | 0.335 |
+
+- Only LOT solves rotatedParity: 98.1% against at most 82.2%.
+- LOT is best or tied on 9 of 12 datasets. On MAGIC it gains 2 points; on Wine and Spambase the gain is smaller than the spread across runs.
+- No gain on ringnorm, WDBC and COMPAS.
+- Lookahead never did worse than greedy on the training objective: 1800 out of 1800 runs.
 
 ![test error of the four variants](results/figures/headline.png)
 
