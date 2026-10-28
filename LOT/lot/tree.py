@@ -3,11 +3,7 @@ from lot.oblique import sampleProjections, obliqueCandidates, project
 import numpy as np
 
 def oneHot(y, C):
-    N = len(y)
-    Y = np.zeros((N, C))
-    for i in range(N):
-        Y[i, y[i]] = 1
-    return Y
+    return np.eye(C)[y]
 
 
 def entropy(counts):
