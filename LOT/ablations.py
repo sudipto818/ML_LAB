@@ -5,9 +5,9 @@ import numpy as np
 from lot.data import stratifiedFolds
 from lot.tree import LOT, schedules
 from lot.metrics import kappa, countNnz, countExtra
-from run_2x2 import datasets, seeds, nFolds, headline, variants
+from experiment import datasets, seeds, nFolds, headline, variants
 
-"""spec 8.4 and H5-H7 at the headline lambda, gamma = lam/2, same folds as run_2x2.py; the gamma
+"""spec 8.4 and H5-H7 at the headline lambda, gamma = lam/2, same folds as experiment.py; the gamma
 ablation is already in runs.csv (gamma = 0 rows). One row per fit in results/ablations.csv"""
 here = os.path.dirname(os.path.abspath(__file__))
 outPath = os.path.join(here, "results", "ablations.csv")

@@ -17,10 +17,10 @@ From inside `LOT/`:
 
 ```bash
 python -m pytest                     # tests
-python fetch_data.py                 # download the real datasets (needs curl)
-python run_2x2.py                    # main experiment -> results/runs.csv
+python fetch.py                      # download the real datasets (needs curl)
+python experiment.py                 # main experiment -> results/runs.csv
 python ablations.py                  # ablations -> results/ablations.csv
-python make_plots.py                 # tables and figures
+python plots.py                      # tables and figures
 python -m demos.demo_rotated_parity  # small demo, about 2 seconds
 ```
 

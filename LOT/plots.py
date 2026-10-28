@@ -4,7 +4,7 @@ import os
 import numpy as np
 from demos.style import plt, save, blue, orange, ink2, muted
 from lot.oblique import nProjections
-from run_2x2 import datasets, headline, lams
+from experiment import datasets, headline, lams
 
 """results/runs.csv and results/ablations.csv -> headline table, interaction I, coverage pi_r, figures
 the 2 x 2 is drawn as colour = candidates (blue axis, orange oblique), fill = selection (hollow Greedy, filled Look)"""
