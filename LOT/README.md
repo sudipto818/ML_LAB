@@ -1,65 +1,37 @@
 # LOT: Lookahead Oblique Trees
 
-LOT is a decision-tree learner that combines two ideas from the two papers: the lookahead scoring of **SPLIT** (*Near-Optimal Decision Trees in a SPLIT Second*, ICML 2025) and the sparse oblique splits of **SPORF** (*Sparse Projection Oblique Randomer Forests*, JMLR 2020). 
-
-## Idea
-
-- A greedy tree picks each split by information gain alone, so it fails on problems like XOR where no single test shows any gain.
-- SPLIT-style lookahead scores a candidate split by the cost of the best small tree below it, so a split with zero immediate gain can still be chosen.
-- SPORF-style oblique splits test sparse combinations $a^\top x \le \tau$ with $a \in \{-1,0,+1\}^p$, which capture diagonal boundaries that axis-aligned trees need many leaves to approximate.
-- LOT puts both in one recursion. It minimises
-
-  $$R(T)=\frac{1}{N}\sum_{i}\mathbf 1[T(x_i)\neq y_i]+\lambda\,S(T)+\gamma\sum_{v}c(a_v),$$
-
-  where $S(T)$ is the number of leaves and $c(a)=\|a\|_0-1$ penalises dense projections.
-
-Two switches give four variants: greedy or lookahead, and axis-only or axis plus oblique. The lookahead and oblique variant is LOT.
+A decision tree with SPLIT's lookahead and SPORF's sparse oblique splits.
+Two switches give four variants: greedy or lookahead, axis or oblique. Lookahead + oblique is LOT.
 
 ## Setup
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate          
+source .venv/bin/activate    # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## Run the tests
+## Run
 
 From inside `LOT/`:
 
 ```bash
-python -m pytest
+python -m pytest                     # tests
+python fetch_data.py                 # download the real datasets (needs curl)
+python run_2x2.py                    # main experiment -> results/runs.csv
+python ablations.py                  # ablations -> results/ablations.csv
+python make_plots.py                 # tables and figures
+python -m demos.demo_rotated_parity  # small demo, about 2 seconds
 ```
 
-## Run the experiments
+## Folders
 
-From inside `LOT/`, in this order:
-
-```bash
-python fetch_data.py               # balance-scale, wdbc (UCI API), vehicle (statlog files), COMPAS; needs curl
-python run_2x2.py                  # 4 variants x 11 datasets x 5 folds x 3 seeds x lambda grid -> results/runs.csv
-python ablations.py                # schedule, screening, depth, threshold control -> results/ablations.csv
-python make_plots.py               # results/headline.md, headline.csv and the figures
-python -m demos.demo_xor           # one script per concept demonstration (spec Table 2)
-```
-
-`run_2x2.py` and `ablations.py` use every core but one and resume where they stopped if interrupted.
-
-## Layout
-
-| Folder | Contents |
-|---|---|
-| `lot/` | the method: data generators, thresholds, projections, tree, metrics |
-| `tests/` | unit tests, including checks that lookahead never does worse than greedy on the training objective |
-| `demos/` | one script per concept: XOR, diagonal, rotated parity, sparse vs dense, projection count |
-| `results/` | `runs.csv`, `ablations.csv`, `headline.md`, `figures/` |
-| `datasets/` | downloaded by `fetch_data.py`, not committed |
-
-
+- `lot/` the tree, data, projections, metrics
+- `tests/` unit tests
+- `demos/` small demos
+- `results/` csv files and figures
 
 ## References
 
 1. SPLIT: *Near-Optimal Decision Trees in a SPLIT Second*, ICML 2025.
 2. SPORF: Tomita et al., *Sparse Projection Oblique Randomer Forests*, JMLR 2020.
-
-The papers are in `../Papers/`.
