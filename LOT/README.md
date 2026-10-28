@@ -20,7 +20,7 @@ python -m pytest tests.py            # tests
 python fetch.py                      # download the real datasets (needs curl)
 python experiment.py                 # main experiment -> results/runs.csv
 python ablations.py                  # ablations -> results/ablations.csv
-python timing.py                     # fit times on this machine -> results/timing.md, 20 min
+python timing.py                     # fit times on this machine -> results/timing.md
 python plots.py                      # tables and figures
 python demo.py                       # LOT vs the other 3 on rotated parity, 2 s
 ```
@@ -33,7 +33,7 @@ python demo.py                       # LOT vs the other 3 on rotated parity, 2 s
 
 ## Results
 
-All numbers are measured, from `results/`. Settings: depth 4, lambda = 0.005, gamma = lambda/2,
+Every number below comes from the files in `results/`. Settings: depth 4, lambda = 0.005, gamma = lambda/2,
 5-fold stratified CV repeated with 3 seeds (15 runs per cell, mean shown). This is SPORF's protocol
 (5-fold CV, Cohen's kappa) repeated 3 times.
 
@@ -99,7 +99,7 @@ Test error:
 - Only LOT solves rotatedParity: 98.1% against at most 82.2%.
 - LOT is best or tied on 9 of 12 datasets. On MAGIC it gains 2 points; on Wine and Spambase the gain is smaller than the spread across runs.
 - No gain on ringnorm, WDBC and COMPAS.
-- Lookahead never did worse than greedy on the training objective: 1800 out of 1800 runs.
+- Lookahead never did worse than greedy on the training objective, in all 1800 paired runs.
 
 ![test error of the four variants](results/figures/headline.png)
 
@@ -130,7 +130,7 @@ Spambase and MAGIC were added), so the three new datasets are not in it.
 
 LOT on rotated parity unless noted, test error:
 
-- (a) Features allowed per split, by level: 3 everywhere 1.9%, fewer near the leaves 2.5%, fewer near the root 7.8%.
+- (a) Limit on features per split, by level: 3 at every level gives 1.9%, fewer near the leaves 2.5%, fewer near the root 7.8%.
 - (b) Looking ahead only at the top 10 candidates by gain: 7.4% instead of 1.9%. The right first split has zero gain, so it gets cut.
 - (c) Parity of order 3 with Look axis: 6.5% at depth 3, 2.4% at depth 4.
 - (d) Axis thresholds built per node, like the oblique ones: vehicle's oblique gain drops from 3.5 to 1.5 points,
@@ -138,5 +138,6 @@ LOT on rotated parity unless noted, test error:
 
 ## References
 
-1. SPLIT: *Near-Optimal Decision Trees in a SPLIT Second*, ICML 2025.
+1. SPLIT: Babbar, McTavish, Rudin, Seltzer, *Near-Optimal Decision Trees in a SPLIT Second*, ICML 2025.
 2. SPORF: Tomita et al., *Sparse Projection Oblique Randomer Forests*, JMLR 2020.
+3. Datasets: UCI Machine Learning Repository; COMPAS from ProPublica.
