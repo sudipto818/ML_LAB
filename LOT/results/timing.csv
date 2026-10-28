@@ -1,0 +1,241 @@
+part,dataset,n,p,variant,seconds
+dataset,parity2,800,4,Greedy axis,0.002209833008237183
+dataset,parity2,800,4,Look axis,0.04481754102744162
+dataset,parity2,800,4,Greedy oblique,0.008656124933622777
+dataset,parity2,800,4,LOT,1.4382544589461759
+dataset,parity2,800,4,Greedy axis,0.0022718750406056643
+dataset,parity2,800,4,Look axis,0.04598008410539478
+dataset,parity2,800,4,Greedy oblique,0.008932084077969193
+dataset,parity2,800,4,LOT,1.4403059160104021
+dataset,parity2,800,4,Greedy axis,0.0022257919190451503
+dataset,parity2,800,4,Look axis,0.046983833075501025
+dataset,parity2,800,4,Greedy oblique,0.00840804202016443
+dataset,parity2,800,4,LOT,1.4477600420359522
+dataset,parity2,800,4,Greedy axis,0.0018157919403165579
+dataset,parity2,800,4,Look axis,0.045929000014439225
+dataset,parity2,800,4,Greedy oblique,0.008129458990879357
+dataset,parity2,800,4,LOT,1.4848346249200404
+dataset,parity2,800,4,Greedy axis,0.0017029170412570238
+dataset,parity2,800,4,Look axis,0.043688250007107854
+dataset,parity2,800,4,Greedy oblique,0.008462750003673136
+dataset,parity2,800,4,LOT,1.4425420409534127
+dataset,parity3,800,5,Greedy axis,0.0023492909967899323
+dataset,parity3,800,5,Look axis,0.08210983301978558
+dataset,parity3,800,5,Greedy oblique,0.029434208991006017
+dataset,parity3,800,5,LOT,9.298527541919611
+dataset,parity3,800,5,Greedy axis,0.0025555420434102416
+dataset,parity3,800,5,Look axis,0.08019745803903788
+dataset,parity3,800,5,Greedy oblique,0.027646749978885055
+dataset,parity3,800,5,LOT,10.608348667039536
+dataset,parity3,800,5,Greedy axis,0.002891375101171434
+dataset,parity3,800,5,Look axis,0.09106283297296613
+dataset,parity3,800,5,Greedy oblique,0.028212749981321394
+dataset,parity3,800,5,LOT,10.595166165963747
+dataset,parity3,800,5,Greedy axis,0.0023286249488592148
+dataset,parity3,800,5,Look axis,0.08577579201664776
+dataset,parity3,800,5,Greedy oblique,0.027849875041283667
+dataset,parity3,800,5,LOT,10.2744525000453
+dataset,parity3,800,5,Greedy axis,0.0029126250883564353
+dataset,parity3,800,5,Look axis,0.09229187504388392
+dataset,parity3,800,5,Greedy oblique,0.027358958031982183
+dataset,parity3,800,5,LOT,10.325331958010793
+dataset,rotatedParity,800,6,Greedy axis,0.0027690420392900705
+dataset,rotatedParity,800,6,Look axis,0.11822916695382446
+dataset,rotatedParity,800,6,Greedy oblique,0.026455000042915344
+dataset,rotatedParity,800,6,LOT,9.68965549999848
+dataset,rotatedParity,800,6,Greedy axis,0.002781165996566415
+dataset,rotatedParity,800,6,Look axis,0.11650424997787923
+dataset,rotatedParity,800,6,Greedy oblique,0.026523665990680456
+dataset,rotatedParity,800,6,LOT,10.362514666980132
+dataset,rotatedParity,800,6,Greedy axis,0.0026888339780271053
+dataset,rotatedParity,800,6,Look axis,0.11651500000152737
+dataset,rotatedParity,800,6,Greedy oblique,0.025076999911107123
+dataset,rotatedParity,800,6,LOT,10.104217124986462
+dataset,rotatedParity,800,6,Greedy axis,0.0022714160149917006
+dataset,rotatedParity,800,6,Look axis,0.11909070797264576
+dataset,rotatedParity,800,6,Greedy oblique,0.02530624996870756
+dataset,rotatedParity,800,6,LOT,9.064010416972451
+dataset,rotatedParity,800,6,Greedy axis,0.0025478749303147197
+dataset,rotatedParity,800,6,Look axis,0.11762575001921505
+dataset,rotatedParity,800,6,Greedy oblique,0.022862624959088862
+dataset,rotatedParity,800,6,LOT,9.592775583034381
+dataset,diagonal,800,4,Greedy axis,0.0020810830174013972
+dataset,diagonal,800,4,Look axis,0.05931433290243149
+dataset,diagonal,800,4,Greedy oblique,0.004077416029758751
+dataset,diagonal,800,4,LOT,0.5802879589609802
+dataset,diagonal,800,4,Greedy axis,0.002026833943091333
+dataset,diagonal,800,4,Look axis,0.06347875006031245
+dataset,diagonal,800,4,Greedy oblique,0.006046957918442786
+dataset,diagonal,800,4,LOT,0.7226202499587089
+dataset,diagonal,800,4,Greedy axis,0.002113458001986146
+dataset,diagonal,800,4,Look axis,0.054906749981455505
+dataset,diagonal,800,4,Greedy oblique,0.0071613750187680125
+dataset,diagonal,800,4,LOT,0.7965260409982875
+dataset,diagonal,800,4,Greedy axis,0.001999958069063723
+dataset,diagonal,800,4,Look axis,0.061719833058305085
+dataset,diagonal,800,4,Greedy oblique,0.004514458007179201
+dataset,diagonal,800,4,LOT,0.6084249579580501
+dataset,diagonal,800,4,Greedy axis,0.0017353750299662352
+dataset,diagonal,800,4,Look axis,0.05959104199428111
+dataset,diagonal,800,4,Greedy oblique,0.007311917026527226
+dataset,diagonal,800,4,LOT,0.8233023340580985
+dataset,orthant,800,5,Greedy axis,0.002419999917037785
+dataset,orthant,800,5,Look axis,0.09162512491457164
+dataset,orthant,800,5,Greedy oblique,0.028015875024721026
+dataset,orthant,800,5,LOT,10.54908312507905
+dataset,orthant,800,5,Greedy axis,0.00230270903557539
+dataset,orthant,800,5,Look axis,0.08582616702187806
+dataset,orthant,800,5,Greedy oblique,0.027911499957554042
+dataset,orthant,800,5,LOT,10.651333624962717
+dataset,orthant,800,5,Greedy axis,0.0029432500014081597
+dataset,orthant,800,5,Look axis,0.09413450001738966
+dataset,orthant,800,5,Greedy oblique,0.03048720897641033
+dataset,orthant,800,5,LOT,11.166852624970488
+dataset,orthant,800,5,Greedy axis,0.0024964159820228815
+dataset,orthant,800,5,Look axis,0.08816429192665964
+dataset,orthant,800,5,Greedy oblique,0.029876125045120716
+dataset,orthant,800,5,LOT,10.52631729200948
+dataset,orthant,800,5,Greedy axis,0.00244141707662493
+dataset,orthant,800,5,Look axis,0.08953241701237857
+dataset,orthant,800,5,Greedy oblique,0.02773162501398474
+dataset,orthant,800,5,LOT,10.516591374995187
+dataset,trunk,800,10,Greedy axis,0.003168500028550625
+dataset,trunk,800,10,Look axis,0.22048445895779878
+dataset,trunk,800,10,Greedy oblique,0.03022083395626396
+dataset,trunk,800,10,LOT,15.283782541984692
+dataset,trunk,800,10,Greedy axis,0.0036523749586194754
+dataset,trunk,800,10,Look axis,0.2189552920171991
+dataset,trunk,800,10,Greedy oblique,0.02872416703030467
+dataset,trunk,800,10,LOT,15.54571583296638
+dataset,trunk,800,10,Greedy axis,0.0033033330691978335
+dataset,trunk,800,10,Look axis,0.22496708296239376
+dataset,trunk,800,10,Greedy oblique,0.03410183300729841
+dataset,trunk,800,10,LOT,15.306058707996272
+dataset,trunk,800,10,Greedy axis,0.0030922089936211705
+dataset,trunk,800,10,Look axis,0.1969820000231266
+dataset,trunk,800,10,Greedy oblique,0.03236233291681856
+dataset,trunk,800,10,LOT,13.314330083900131
+dataset,trunk,800,10,Greedy axis,0.003476083045825362
+dataset,trunk,800,10,Look axis,0.1995062920032069
+dataset,trunk,800,10,Greedy oblique,0.03407158295158297
+dataset,trunk,800,10,LOT,13.260114667005837
+dataset,ringnorm,1600,20,Greedy axis,0.006071374984458089
+dataset,ringnorm,1600,20,Look axis,0.7814511250471696
+dataset,ringnorm,1600,20,Greedy oblique,0.050419499981217086
+dataset,ringnorm,1600,20,LOT,21.858773999963887
+dataset,ringnorm,1600,20,Greedy axis,0.006837666966021061
+dataset,ringnorm,1600,20,Look axis,0.76678212499246
+dataset,ringnorm,1600,20,Greedy oblique,0.043961791903711855
+dataset,ringnorm,1600,20,LOT,21.75395425001625
+dataset,ringnorm,1600,20,Greedy axis,0.006727625033818185
+dataset,ringnorm,1600,20,Look axis,0.7759310000110418
+dataset,ringnorm,1600,20,Greedy oblique,0.05310433404520154
+dataset,ringnorm,1600,20,LOT,24.40685441705864
+dataset,ringnorm,1600,20,Greedy axis,0.0068185830023139715
+dataset,ringnorm,1600,20,Look axis,0.7695481670089066
+dataset,ringnorm,1600,20,Greedy oblique,0.04481370793655515
+dataset,ringnorm,1600,20,LOT,21.69638679199852
+dataset,ringnorm,1600,20,Greedy axis,0.006830541999079287
+dataset,ringnorm,1600,20,Look axis,0.7824439579853788
+dataset,ringnorm,1600,20,Greedy oblique,0.05141595797613263
+dataset,ringnorm,1600,20,LOT,21.95638691599015
+dataset,balanceScale,500,4,Greedy axis,0.0021048339549452066
+dataset,balanceScale,500,4,Look axis,0.0441792500205338
+dataset,balanceScale,500,4,Greedy oblique,0.00812858296558261
+dataset,balanceScale,500,4,LOT,1.2730061250040308
+dataset,balanceScale,500,4,Greedy axis,0.0017477080691605806
+dataset,balanceScale,500,4,Look axis,0.04556120897177607
+dataset,balanceScale,500,4,Greedy oblique,0.00807425007224083
+dataset,balanceScale,500,4,LOT,1.28795562509913
+dataset,balanceScale,500,4,Greedy axis,0.0019699999829754233
+dataset,balanceScale,500,4,Look axis,0.044043708010576665
+dataset,balanceScale,500,4,Greedy oblique,0.007822290994226933
+dataset,balanceScale,500,4,LOT,1.2804523749509826
+dataset,balanceScale,500,4,Greedy axis,0.001981250010430813
+dataset,balanceScale,500,4,Look axis,0.04845291597303003
+dataset,balanceScale,500,4,Greedy oblique,0.00894087494816631
+dataset,balanceScale,500,4,LOT,1.2707360830390826
+dataset,balanceScale,500,4,Greedy axis,0.0019547080155462027
+dataset,balanceScale,500,4,Look axis,0.04724475007969886
+dataset,balanceScale,500,4,Greedy oblique,0.008788334089331329
+dataset,balanceScale,500,4,LOT,1.2644199590431526
+dataset,vehicle,676,18,Greedy axis,0.0039035830413922668
+dataset,vehicle,676,18,Look axis,0.4614207089180127
+dataset,vehicle,676,18,Greedy oblique,0.03561220795381814
+dataset,vehicle,676,18,LOT,17.817507083993405
+dataset,vehicle,677,18,Greedy axis,0.0041571250185370445
+dataset,vehicle,677,18,Look axis,0.4291790829738602
+dataset,vehicle,677,18,Greedy oblique,0.035769165959209204
+dataset,vehicle,677,18,LOT,16.902446374995634
+dataset,vehicle,677,18,Greedy axis,0.004175917012616992
+dataset,vehicle,677,18,Look axis,0.46854395791888237
+dataset,vehicle,677,18,Greedy oblique,0.033282749936915934
+dataset,vehicle,677,18,LOT,17.48686341708526
+dataset,vehicle,677,18,Greedy axis,0.0039562080055475235
+dataset,vehicle,677,18,Look axis,0.42402683303225785
+dataset,vehicle,677,18,Greedy oblique,0.03566145908553153
+dataset,vehicle,677,18,LOT,17.927599624963477
+dataset,vehicle,677,18,Greedy axis,0.004062750027514994
+dataset,vehicle,677,18,Look axis,0.48584241699427366
+dataset,vehicle,677,18,Greedy oblique,0.04316025006119162
+dataset,vehicle,677,18,LOT,17.139699082938023
+dataset,wdbc,455,30,Greedy axis,0.004271959071047604
+dataset,wdbc,455,30,Look axis,0.5664325000252575
+dataset,wdbc,455,30,Greedy oblique,0.02319379197433591
+dataset,wdbc,455,30,LOT,13.235013541998342
+dataset,wdbc,455,30,Greedy axis,0.004080292070284486
+dataset,wdbc,455,30,Look axis,0.6148652080446482
+dataset,wdbc,455,30,Greedy oblique,0.024166124989278615
+dataset,wdbc,455,30,LOT,12.988644500030205
+dataset,wdbc,455,30,Greedy axis,0.004305458045564592
+dataset,wdbc,455,30,Look axis,0.6143614579923451
+dataset,wdbc,455,30,Greedy oblique,0.027051290962845087
+dataset,wdbc,455,30,LOT,12.842583707999438
+dataset,wdbc,455,30,Greedy axis,0.008180457982234657
+dataset,wdbc,455,30,Look axis,0.5754866249626502
+dataset,wdbc,455,30,Greedy oblique,0.022236582939513028
+dataset,wdbc,455,30,LOT,13.589944125036709
+dataset,wdbc,456,30,Greedy axis,0.004779875045642257
+dataset,wdbc,456,30,Look axis,0.6199350419919938
+dataset,wdbc,456,30,Greedy oblique,0.025028874981217086
+dataset,wdbc,456,30,LOT,12.811865291092545
+dataset,compas,1600,11,Greedy axis,0.003694291110150516
+dataset,compas,1600,11,Look axis,0.0704904169542715
+dataset,compas,1600,11,Greedy oblique,0.03929583297576755
+dataset,compas,1600,11,LOT,9.1019025829155
+dataset,compas,1600,11,Greedy axis,0.003441292094066739
+dataset,compas,1600,11,Look axis,0.07439737499225885
+dataset,compas,1600,11,Greedy oblique,0.03949875000398606
+dataset,compas,1600,11,LOT,9.9751787079731
+dataset,compas,1600,11,Greedy axis,0.003659500041976571
+dataset,compas,1600,11,Look axis,0.07195708400104195
+dataset,compas,1600,11,Greedy oblique,0.04094712494406849
+dataset,compas,1600,11,LOT,9.209161167033017
+dataset,compas,1600,11,Greedy axis,0.004065999994054437
+dataset,compas,1600,11,Look axis,0.07343237497843802
+dataset,compas,1600,11,Greedy oblique,0.04493108403403312
+dataset,compas,1600,11,LOT,9.23188791598659
+dataset,compas,1600,11,Greedy axis,0.0036531250225380063
+dataset,compas,1600,11,Look axis,0.06669795804191381
+dataset,compas,1600,11,Greedy oblique,0.03595833305735141
+dataset,compas,1600,11,LOT,9.036971500026993
+size,rotatedParity,250,6,Greedy axis,0.001699125044979155
+size,rotatedParity,250,6,Look axis,0.07656062499154359
+size,rotatedParity,250,6,Greedy oblique,0.01521766697987914
+size,rotatedParity,250,6,LOT,7.263617541990243
+size,rotatedParity,500,6,Greedy axis,0.002235042047686875
+size,rotatedParity,500,6,Look axis,0.10606316709890962
+size,rotatedParity,500,6,Greedy oblique,0.022693415987305343
+size,rotatedParity,500,6,LOT,8.301373875001445
+size,rotatedParity,1000,6,Greedy axis,0.0029410840943455696
+size,rotatedParity,1000,6,Look axis,0.12310720898676664
+size,rotatedParity,1000,6,Greedy oblique,0.02823966694995761
+size,rotatedParity,1000,6,LOT,10.645364916999824
+size,rotatedParity,2000,6,Greedy axis,0.003912708023563027
+size,rotatedParity,2000,6,Look axis,0.16281491704285145
+size,rotatedParity,2000,6,Greedy oblique,0.046884333016350865
+size,rotatedParity,2000,6,LOT,16.633646166999824
+size,rotatedParity,4000,6,Greedy axis,0.006290583056397736
+size,rotatedParity,4000,6,Look axis,0.23669779091142118
+size,rotatedParity,4000,6,Greedy oblique,0.0790652499999851
+size,rotatedParity,4000,6,LOT,24.151438375003636

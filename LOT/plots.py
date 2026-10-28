@@ -231,3 +231,29 @@ ax.set(xlabel=r"oblique benefit under Look, $E_{10} - E_{11}$", title="(d) Thres
 ax.legend(loc="lower right", fontsize=7)
 fig.tight_layout()
 save(fig, "ablations.png")
+
+"""figure: fit time on this machine, from results/timing.csv (timing.py)"""
+tim = list(csv.DictReader(open(os.path.join(res, "timing.csv"))))
+med = lambda **c: np.median([float(r["seconds"]) for r in tim if all(r[k] == v for k, v in c.items())])
+fig, (a, b) = plt.subplots(1, 2, figsize=(11, 4), gridspec_kw={"width_ratios": [1.1, 1]})
+for i, name in enumerate(order):
+    for k, ((L, O), vn) in enumerate(variantName.items()):
+        marker(a, med(part="dataset", dataset=name, variant=vn), i + (1.5 - k) * 0.16, L, O,
+               label=vn if i == 0 else None)
+a.set_xscale("log")
+a.set_yticks(range(len(order)), order)
+a.set(xlabel="fit seconds (median of 5 folds, log scale)", title="(a) Fit time per dataset")
+a.legend(loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=4)
+sizes = sorted({int(r["n"]) for r in tim if r["part"] == "size"})
+for (L, O), vn in variantName.items():
+    c = orange if O else blue
+    t = [med(part="size", n=str(n), variant=vn) for n in sizes]
+    b.plot(sizes, t, color=c, lw=1.2, ls="-" if L else (0, (3, 2)))
+    for n, s in zip(sizes, t):
+        marker(b, n, s, L, O)
+b.set_xscale("log", base=2)
+b.set_yscale("log")
+b.set_xticks(sizes, [str(n) for n in sizes])
+b.set(xlabel="training samples N", ylabel="fit seconds (log scale)", title="(b) Rotated parity as N grows")
+fig.tight_layout()
+save(fig, "timing.png")
