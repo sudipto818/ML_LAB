@@ -107,6 +107,12 @@ with open(os.path.join(res, "headline.md"), "w") as f:
         f.write("| %s | %d | %.2f | %s | %+.3f +- %.3f | %.1f | %.1f |\n" % (
             row["dataset"], row["p"], row["pi2"], " | ".join(cells), row["I"][0], row["I"][1],
             row["LOT"]["leaves"][0], row["LOT"]["nnz"][0]))
+    f.write("\nTest accuracy (%), mean +- sd\n\n| dataset | " + " | ".join(variantName.values()) + " |\n")
+    f.write("|---" * 5 + "|\n")
+    for row in table:
+        f.write("| %s | %s |\n" % (row["dataset"], " | ".join("%.1f +- %.1f" % (100 - 100 * row[vn]["testError"][0],
+                                                                                100 * row[vn]["testError"][1])
+                                                            for vn in variantName.values())))
     f.write("\nCohen's kappa, mean +- sd\n\n| dataset | " + " | ".join(variantName.values()) + " |\n")
     f.write("|---" * 5 + "|\n")
     for row in table:
@@ -179,14 +185,12 @@ for ax in axs[-1]:
     ax.set_xlabel("leaves (mean)")
 for ax in axs[:, 0]:
     ax.set_ylabel("test error (mean)")
-last = axs.flat[-1]
-last.axis("off")
 for (L, O), vn in variantName.items():
-    marker(last, np.nan, np.nan, L, O, label=vn)
-last.legend(loc="center", title=r"one point per $\lambda \in \{%s\}$" % ", ".join("%g" % l for l in lams))
-last.text(0.5, 0.12, "a hidden marker lies under LOT:\nthose variants found the same trees", transform=last.transAxes,
-          ha="center", fontsize=8, color=ink2)
-fig.tight_layout()
+    marker(axs.flat[0], np.nan, np.nan, L, O, label=vn)
+fig.tight_layout(rect=(0, 0.06, 1, 1))
+fig.legend(*axs.flat[0].get_legend_handles_labels(), loc="lower center", ncol=4,
+           title=r"one point per $\lambda \in \{%s\}$; a hidden marker lies under LOT where the trees are the same"
+           % ", ".join("%g" % l for l in lams))
 save(fig, "lambda.png")
 
 """figure: ablations"""
