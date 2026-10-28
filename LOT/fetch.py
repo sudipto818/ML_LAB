@@ -80,5 +80,8 @@ def compas():
 os.makedirs(raw, exist_ok=True)
 uciApi(12, "balance_scale")
 uciApi(17, "wdbc")
+uciApi(94, "spambase")
+uciApi(159, "magic")
+uciApi(109, "wine")
 vehicle()
 compas()

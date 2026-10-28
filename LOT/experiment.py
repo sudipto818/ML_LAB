@@ -2,7 +2,7 @@ from runner import doneRows, runAll
 import os
 import time
 import numpy as np
-from lot.data import parity, rotatedParity, diagonal, orthant, trunk, ringnorm, loadCsv, subsample, stratifiedFolds
+from lot.data import parity, rotatedParity, orthant, trunk, ringnorm, loadCsv, subsample, stratifiedFolds
 from lot.tree import LOT
 from lot.metrics import kappa, countNnz, countExtra
 
@@ -20,21 +20,25 @@ header = ["dataset", "seed", "fold", "lam", "gamma", "L", "O", "testError", "kap
 
 
 def datasets():
-    """synthetic: n = 1000 with 2 noise features (spec 8.2 leaves p_noise open); real: N <= 2000
+    """synthetic: SPORF's sparse parity, orthant, trunk and ringnorm, plus rotatedParity, built for LOT;
+    n = 1000 with 2 noise features. Real: datasets used in SPLIT or SPORF, N <= 2000
     the value is (X, y, numeric): COMPAS projects its 5 numeric features only (spec 9)"""
     real = os.path.join(here, "datasets")
     compas = subsample(*loadCsv(os.path.join(real, "compas.csv")), 2000, 0)
+    spambase = subsample(*loadCsv(os.path.join(real, "spambase.csv")), 2000, 0)
+    magic = subsample(*loadCsv(os.path.join(real, "magic.csv")), 2000, 0)
     return {
-        "parity2": parity(1000, 2, 2, 0) + (None,),
         "parity3": parity(1000, 3, 2, 0) + (None,),
         "rotatedParity": rotatedParity(1000, 2, 0) + (None,),
-        "diagonal": diagonal(1000, 2, 0) + (None,),
         "orthant": orthant(1000, 3, 2, 0) + (None,),
         "trunk": trunk(1000, 10, 0) + (None,),
         "ringnorm": ringnorm(2000, 0) + (None,),
         "balanceScale": loadCsv(os.path.join(real, "balance_scale.csv")) + (None,),
         "vehicle": loadCsv(os.path.join(real, "vehicle.csv")) + (None,),
         "wdbc": loadCsv(os.path.join(real, "wdbc.csv")) + (None,),
+        "wine": loadCsv(os.path.join(real, "wine.csv")) + (None,),
+        "spambase": spambase + (None,),
+        "magic": magic + (None,),
         "compas": compas + ([0, 1, 2, 3, 4],),
     }
 
