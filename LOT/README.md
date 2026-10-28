@@ -110,7 +110,8 @@ Panel (b) is the interaction I: below 0 means the two ideas help each other.
 
 Measured with `python timing.py` on a MacBook Air (M1, 4 performance + 4 efficiency cores,
 8 GB RAM, macOS 15.7, Python 3.14, NumPy 2.5), on battery, one fit at a time.
-Full tables are in `results/timing.md`.
+Full tables are in `results/timing.md`. This run used the earlier dataset list (with parity2 and diagonal, before Wine,
+Spambase and MAGIC were added), so the three new datasets are not in it.
 
 | | Greedy axis | Look axis | Greedy oblique | LOT |
 |---|---|---|---|---|
