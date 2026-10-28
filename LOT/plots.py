@@ -2,7 +2,9 @@ import csv
 import math
 import os
 import numpy as np
-from demos.style import plt, save, blue, orange, ink2, muted
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 from lot.oblique import nProjections
 from experiment import datasets, headline, lams
 
@@ -10,6 +12,21 @@ from experiment import datasets, headline, lams
 the 2 x 2 is drawn as colour = candidates (blue axis, orange oblique), fill = selection (hollow Greedy, filled Look)"""
 here = os.path.dirname(os.path.abspath(__file__))
 res = os.path.join(here, "results")
+blue, orange, ink2, muted = "#2a78d6", "#eb6834", "#52514e", "#898781"
+plt.rcParams.update({
+    "figure.dpi": 150, "savefig.dpi": 200, "savefig.bbox": "tight",
+    "font.family": "sans-serif", "font.size": 9, "axes.titlesize": 10, "axes.titleweight": "bold",
+    "text.color": "#0b0b0b", "axes.labelcolor": ink2, "xtick.color": muted, "ytick.color": muted,
+    "axes.edgecolor": "#c3c2b7", "axes.linewidth": 0.8, "axes.spines.top": False, "axes.spines.right": False,
+    "axes.grid": True, "grid.color": "#e1e0d9", "grid.linewidth": 0.6, "axes.axisbelow": True,
+    "lines.linewidth": 2, "legend.frameon": False, "legend.fontsize": 8,
+})
+
+
+def save(fig, name):
+    path = os.path.join(res, "figures", name)
+    fig.savefig(path)
+    print("saved", path)
 ds = datasets()
 names = list(ds)
 nums = {}

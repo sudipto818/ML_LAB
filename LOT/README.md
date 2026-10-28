@@ -21,14 +21,13 @@ python fetch.py                      # download the real datasets (needs curl)
 python experiment.py                 # main experiment -> results/runs.csv
 python ablations.py                  # ablations -> results/ablations.csv
 python plots.py                      # tables and figures
-python -m demos.demo_rotated_parity  # small demo, about 2 seconds
+python demo.py                       # LOT vs the other 3 on rotated parity, 2 s
 ```
 
 ## Folders
 
 - `lot/` the tree, data, projections, metrics
 - `tests/` unit tests
-- `demos/` small demos
 - `results/` csv files and figures
 
 ## References
